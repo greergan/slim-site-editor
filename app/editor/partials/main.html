@@ -55,5 +55,31 @@
 
 </div><!-- /work-area -->
 
+<!-- config form (shown when config.json is opened) -->
+<div id="config-form">
+  <div id="config-form-header">Project Config</div>
+  <div id="config-form-fields">
+    <label>Site Title
+      <input id="cfg-siteTitle" type="text" oninput="onConfigInput()" />
+    </label>
+    <label>Site Prompt
+      <input id="cfg-sitePrompt" type="text" oninput="onConfigInput()" />
+    </label>
+    <label>Site Description
+      <input id="cfg-siteDesc" type="text" oninput="onConfigInput()" />
+    </label>
+    <label>Current Year
+      <input id="cfg-currentYear" type="text" oninput="onConfigInput()" />
+    </label>
+    <label>Site URL
+      <input id="cfg-siteUrl" type="text" oninput="onConfigInput()" />
+    </label>
+    <label>Author
+      <input id="cfg-author" type="text" oninput="onConfigInput()" />
+    </label>
+  </div>
+  <div id="config-form-status"></div>
+</div>
+
 <!-- raw / config editor (shown instead of work-area for config files) -->
 <textarea id="raw-editor" placeholder=""></textarea>

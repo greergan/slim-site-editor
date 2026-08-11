@@ -286,12 +286,14 @@ body {
 /* empty state */
 #empty-state {
   flex: 1;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   color: #555;
   font-size: 13px;
 }
+
+#empty-state.visible { display: flex; }
 
 /* ---- edit/preview layout toggle bar ---- */
 #view-bar {
@@ -485,6 +487,66 @@ body {
 }
 
 #raw-editor.visible { display: block; }
+
+/* ---- config form ---- */
+#config-form {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+#config-form.visible {
+  display: flex;
+}
+
+#config-form-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+}
+
+#config-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#config-form-fields label {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: #888;
+  gap: 4px;
+}
+
+#config-form-fields input {
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  width: 100%;
+  max-width: 480px;
+  outline: none;
+}
+
+#config-form-fields input:focus {
+  border-color: #569cd6;
+}
+
+#config-form-status {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #888;
+  min-height: 18px;
+}
 
 /* ---- error modal ---- */
 #error-modal-overlay {

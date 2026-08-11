@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('api', {
     listPosts:      () => Promise.resolve({ posts: [] }),
     getPost:        () => Promise.resolve({ post: null }),
     savePost:       () => Promise.resolve({ ok: false }),
-    getConfig:      () => Promise.resolve({ config: null }),
-    saveConfig:     () => Promise.resolve({ ok: false }),
+    getConfig:      (args) => ipcRenderer.invoke('get-config', args),
+    saveConfig:     (args) => ipcRenderer.invoke('save-config', args),
     triggerBuild:   () => Promise.resolve({ ok: false }),
 });

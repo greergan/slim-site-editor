@@ -426,6 +426,75 @@ ipcMain.handle('save-app-config', async function (event, config) {
     }
 });
 
+// -------------------------------------------------------------
+// IPC — get-config
+// Reads artifacts/config.json from project dir
+// Returns { ok, config } or { ok, error }
+// -------------------------------------------------------------
+ipcMain.handle('get-config', async function (event, { dir }) {
+    log.trace({func: 'get-config', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'get-config', msg: `dir => ${dir}`, file: __filename, line: 0});
+
+    try {
+        if (!dir) {
+            log.debug({func: 'get-config', msg: 'missing dir', file: __filename, line: 0});
+            log.trace({func: 'get-config', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dir is required' };
+        }
+
+        const configFile = path.join(path.resolve(dir), 'artifacts', 'config.json');
+
+        if (!fs.existsSync(configFile)) {
+            log.debug({func: 'get-config', msg: `config not found => ${configFile}`, file: __filename, line: 0});
+            log.trace({func: 'get-config', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'config.json not found: ' + configFile };
+        }
+
+        const raw    = fs.readFileSync(configFile, 'utf8');
+        const config = JSON.parse(raw);
+
+        log.debug({func: 'get-config', msg: 'config loaded', file: __filename, line: 0});
+        log.trace({func: 'get-config', msg: 'ends', file: __filename, line: 0});
+
+        return { ok: true, config };
+    } catch (e) {
+        log.debug({func: 'get-config', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'get-config', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+});
+
+// -------------------------------------------------------------
+// IPC — save-config
+// Writes artifacts/config.json to project dir
+// Returns { ok } or { ok, error }
+// -------------------------------------------------------------
+ipcMain.handle('save-config', async function (event, { dir, config }) {
+    log.trace({func: 'save-config', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'save-config', msg: `dir => ${dir}`, file: __filename, line: 0});
+
+    try {
+        if (!dir || !config) {
+            log.debug({func: 'save-config', msg: 'missing dir or config', file: __filename, line: 0});
+            log.trace({func: 'save-config', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dir and config are required' };
+        }
+
+        const configFile = path.join(path.resolve(dir), 'artifacts', 'config.json');
+
+        fs.writeFileSync(configFile, JSON.stringify(config, null, 2), 'utf8');
+
+        log.debug({func: 'save-config', msg: 'config saved', file: __filename, line: 0});
+        log.trace({func: 'save-config', msg: 'ends', file: __filename, line: 0});
+
+        return { ok: true };
+    } catch (e) {
+        log.debug({func: 'save-config', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'save-config', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', function () {

@@ -35,10 +35,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadPartial('sidebar', 'partials/sidebar.html');
     await loadPartial('main',    'partials/main.html');
 
-    // show work-area and view-bar only when a post is open
-    document.getElementById('work-area').classList.remove('visible');
-    document.getElementById('view-bar').classList.remove('visible');
-
     // set app name from package.json
     const name = await window.api.appName();
     document.title = name;
