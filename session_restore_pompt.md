@@ -79,13 +79,14 @@ app/
 - `config:` — configuration or build changes (triggers patch version bump)
 - `docs:` — documentation changes (triggers patch version bump)
 - rember what has changed during the session
-- give git comments as a copy/paste block when asked
+- give git comments as a full copy/paste block when asked including all session changes
 
 
 
 ## Working rules
 - Workflow plan before any code
-- One file at a time, full file reissued
+- One transaction at a time
+- full file reissued for download
 - No compiling or running tests — code is given to me to compile
 - No refactoring without permission
 - No removing anything without permission

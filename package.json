@@ -9,5 +9,8 @@
   "devDependencies": {
     "electron": "^30.0.0",
     "electron-reload": "^2.0.0-alpha.1"
+  },
+  "dependencies": {
+    "quill": "^2.0.3"
   }
 }
