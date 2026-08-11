@@ -13,30 +13,6 @@
 
   <!-- edit pane -->
   <div id="edit-pane">
-    <div id="meta-fields">
-      <label>Title
-        <input id="field-title" type="text" oninput="onMetaChange()" />
-      </label>
-      <label>Description
-        <input id="field-desc" type="text" oninput="onMetaChange()" />
-      </label>
-      <label>Date
-        <input id="field-date" type="date" oninput="onMetaChange()" />
-      </label>
-      <label>Tags (comma-sep)
-        <input id="field-tags" type="text" oninput="onMetaChange()" />
-      </label>
-      <label>Read time
-        <input id="field-readtime" type="text" oninput="onMetaChange()" />
-      </label>
-      <label>Pinned
-        <input id="field-pinned" type="checkbox" onchange="onMetaChange()" />
-      </label>
-      <label>Pinned order
-        <input id="field-pinned-order" type="text" style="width:60px;" oninput="onMetaChange()" />
-      </label>
-    </div>
-
     <!-- body editor — Quill mounts here -->
     <div id="body-editor"></div>
 
@@ -79,6 +55,35 @@
     </label>
   </div>
   <div id="config-form-status"></div>
+</div>
+
+<!-- post settings form (shown when article Settings is clicked) -->
+<div id="post-settings-form">
+  <div id="post-settings-header">Post Settings</div>
+  <div id="post-settings-fields">
+    <label>Title
+      <input id="field-title" type="text" oninput="onMetaChange()" />
+    </label>
+    <label>Description
+      <input id="field-desc" type="text" oninput="onMetaChange()" />
+    </label>
+    <label>Date
+      <input id="field-date" type="date" oninput="onMetaChange()" />
+    </label>
+    <label>Tags (comma-sep)
+      <input id="field-tags" type="text" oninput="onMetaChange()" />
+    </label>
+    <label>Read time
+      <input id="field-readtime" type="text" oninput="onMetaChange()" />
+    </label>
+    <label>Pinned
+      <input id="field-pinned" type="checkbox" onchange="onMetaChange()" />
+    </label>
+    <label>Pinned order
+      <input id="field-pinned-order" type="text" style="width:60px;" oninput="onMetaChange()" />
+    </label>
+  </div>
+  <div id="post-settings-status"></div>
 </div>
 
 <!-- raw / config editor (shown instead of work-area for config files) -->

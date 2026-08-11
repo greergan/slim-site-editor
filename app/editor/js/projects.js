@@ -417,15 +417,42 @@ function initQuill() {
 }
 
 // ----------------------------------------------------------
-// Open post config — structured form for per-article metadata
-// Stub — form view to be built in next phase
+// Open post config — structured settings form for per-article metadata
 // ----------------------------------------------------------
-export function openPostConfig(dir, slug) {
+export async function openPostConfig(dir, slug) {
     console.trace('[openPostConfig] begins');
     console.debug('[openPostConfig] dir =>', dir, 'slug =>', slug);
 
-    // TODO: load post.json fields into a config form view
-    setStatus('post config: ' + slug + ' — not yet implemented');
+    _postDir  = dir;
+    _postSlug = slug;
+
+    console.debug('[openPostConfig] loading post for settings =>', slug);
+
+    const data = await window.api.getPost({ dir, slug });
+
+    if (!data.ok) {
+        window.dispatchEvent(new CustomEvent('app:show-error', { detail: data.error }));
+        console.trace('[openPostConfig] ends');
+        return;
+    }
+
+    const post = data.post;
+
+    console.debug('[openPostConfig] post loaded =>', JSON.stringify(post).slice(0, 80));
+
+    document.getElementById('field-title').value        = post.title        || '';
+    document.getElementById('field-desc').value         = post.description  || '';
+    document.getElementById('field-date').value         = post.date         || '';
+    document.getElementById('field-tags').value         = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
+    document.getElementById('field-readtime').value     = post.readTime     || '';
+    document.getElementById('field-pinned').checked     = post.pinned       || false;
+    document.getElementById('field-pinned-order').value = post.pinnedOrder  || '';
+
+    document.getElementById('post-settings-status').textContent = '';
+
+    showView('post-settings');
+
+    setStatus('settings: ' + slug);
 
     console.trace('[openPostConfig] ends');
 }

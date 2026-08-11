@@ -162,7 +162,7 @@ async function loadArticleList(dir, articleList) {
     // project config.json — first item, same indent as articles
     const configItem = document.createElement('div');
     configItem.className   = 'config-nav-item';
-    configItem.textContent = 'Site Config';
+    configItem.textContent = 'Site Settings';
     configItem.addEventListener('click', function(event) {
         event.stopPropagation();
         openProjectConfig(dir);
@@ -214,7 +214,7 @@ async function loadArticleList(dir, articleList) {
         // per-article config child link
         const articleConfig = document.createElement('div');
         articleConfig.className   = 'article-config-item';
-        articleConfig.textContent = 'config';
+        articleConfig.textContent = 'Settings';
         articleConfig.dataset.slug = post.slug;
         articleConfig.dataset.dir  = dir;
 

@@ -13,11 +13,12 @@ export function showView(name) {
     console.trace('[showView] begins');
     console.debug('[showView] name =>', name);
 
-    const emptyState = document.getElementById('empty-state');
-    const viewBar    = document.getElementById('view-bar');
-    const workArea   = document.getElementById('work-area');
-    const rawEditor  = document.getElementById('raw-editor');
-    const configForm = document.getElementById('config-form');
+    const emptyState       = document.getElementById('empty-state');
+    const viewBar          = document.getElementById('view-bar');
+    const workArea         = document.getElementById('work-area');
+    const rawEditor        = document.getElementById('raw-editor');
+    const configForm       = document.getElementById('config-form');
+    const postSettingsForm = document.getElementById('post-settings-form');
 
     // hide all views first
     emptyState.classList.remove('visible');
@@ -25,6 +26,7 @@ export function showView(name) {
     workArea.classList.remove('visible');
     rawEditor.classList.remove('visible');
     configForm.classList.remove('visible');
+    postSettingsForm.classList.remove('visible');
 
     if (name === 'welcome') {
         emptyState.classList.add('visible');
@@ -36,6 +38,9 @@ export function showView(name) {
         viewBar.classList.add('visible');
         workArea.classList.add('visible');
         console.debug('[showView] showing post-editor');
+    } else if (name === 'post-settings') {
+        postSettingsForm.classList.add('visible');
+        console.debug('[showView] showing post-settings');
     } else {
         console.debug('[showView] unknown view name — falling back to welcome');
         emptyState.classList.add('visible');
