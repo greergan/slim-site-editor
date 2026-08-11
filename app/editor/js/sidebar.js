@@ -43,6 +43,14 @@ export async function pickDir(targetInputId) {
     }
 
     document.getElementById(targetInputId).value = dir;
+
+    // autofill project name from directory basename
+    if (targetInputId === 'new-project-parent') {
+        const nameInput = document.getElementById('new-project-name');
+        if (nameInput && !nameInput.value) {
+            nameInput.value = dir.split('/').filter(Boolean).pop();
+        }
+    }
 }
 
 // ----------------------------------------------------------

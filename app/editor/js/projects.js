@@ -4,6 +4,17 @@ import { setStatus }   from './editor.js';
 import { loadProjects } from './sidebar.js';
 
 // ----------------------------------------------------------
+// Collapse Add Project section
+// ----------------------------------------------------------
+function collapseAddProject() {
+    const body   = document.getElementById('add-project-section');
+    const header = body.previousElementSibling;
+
+    header.classList.remove('open');
+    body.classList.remove('open');
+}
+
+// ----------------------------------------------------------
 // Tab switcher
 // ----------------------------------------------------------
 export function setAddProjectTab(tab) {
@@ -55,6 +66,8 @@ export async function doNewProject() {
 
     setStatus('created: ' + result.dir);
 
+    collapseAddProject();
+
     await loadProjects();
 }
 
@@ -79,6 +92,8 @@ export async function doImport() {
     document.getElementById('import-input').value = '';
 
     setStatus('imported: ' + result.dir);
+
+    collapseAddProject();
 
     await loadProjects();
 }

@@ -14,6 +14,12 @@ const appConfig = require('./app-config');
 //const log = require('./src/log');
 const log = console;
 
+if (process.env.NODE_ENV === 'development') {
+    require('electron-reload')(__dirname, {
+        electron: require('path').join(__dirname, '..', 'node_modules', '.bin', 'electron')
+    });
+}
+
 
 function createWindow() {
     const cfg = appConfig.load(app.getPath('userData'));
