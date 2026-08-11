@@ -1,7 +1,7 @@
 'use strict';
 
 import { setStatus }                      from './editor.js';
-import { loadProjects, expandProjectRow } from './sidebar.js';
+import { loadProjects, expandProjectRow, updateProjectRowName } from './sidebar.js';
 import { showView, updatePreview }        from './editor-view.js';
 
 // ----------------------------------------------------------
@@ -223,7 +223,7 @@ export function onConfigInput() {
 
     _configDebounce = setTimeout(function() {
         saveConfig();
-    }, 500);
+    }, 300);
 
     console.trace('[onConfigInput] ends');
 }
@@ -260,7 +260,11 @@ async function saveConfig() {
     }
 
     document.getElementById('config-form-status').textContent = 'saved';
-    setStatus('config saved');
+    setStatus('config saved', 'success');
+
+    // update sidebar project row label immediately
+    updateProjectRowName(_configDir, config.siteTitle);
+    console.debug('[saveConfig] sidebar row name updated =>', config.siteTitle);
 
     console.trace('[saveConfig] ends');
 }
@@ -324,7 +328,7 @@ export function onMetaChange() {
     document.getElementById('save-status').textContent = 'saving...';
 
     clearTimeout(_postDebounce);
-    _postDebounce = setTimeout(function() { savePost(); }, 500);
+    _postDebounce = setTimeout(function() { savePost(); }, 300);
 
     console.trace('[onMetaChange] ends');
 }
@@ -410,7 +414,7 @@ function initQuill() {
         document.getElementById('save-status').textContent = 'saving...';
 
         clearTimeout(_postDebounce);
-        _postDebounce = setTimeout(function() { savePost(); }, 500);
+        _postDebounce = setTimeout(function() { savePost(); }, 300);
     });
 
     console.trace('[initQuill] ends');

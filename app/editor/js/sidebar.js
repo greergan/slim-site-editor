@@ -355,6 +355,40 @@ export async function loadProjects() {
 }
 
 // ----------------------------------------------------------
+// updateProjectRowName — updates project row label in place
+// Called by projects.js after siteTitle save
+// ----------------------------------------------------------
+export function updateProjectRowName(dir, name) {
+    console.trace('[updateProjectRowName] begins');
+    console.debug('[updateProjectRowName] dir =>', dir, 'name =>', name);
+
+    const section = document.getElementById('projects-section');
+    const row     = section.querySelector('.project-row[data-dir="' + dir + '"]');
+
+    if (!row) {
+        console.debug('[updateProjectRowName] row not found — skipping');
+        console.trace('[updateProjectRowName] ends');
+        return;
+    }
+
+    // row innerHTML: <span><span class="proj-arrow">▶</span>NAME</span><span>⋯</span>
+    const labelSpan = row.querySelector(':scope > span:first-child');
+
+    if (!labelSpan) {
+        console.debug('[updateProjectRowName] labelSpan not found — skipping');
+        console.trace('[updateProjectRowName] ends');
+        return;
+    }
+
+    const arrow = labelSpan.querySelector('.proj-arrow');
+    labelSpan.textContent = '';
+    if (arrow) labelSpan.appendChild(arrow);
+    labelSpan.appendChild(document.createTextNode(name));
+
+    console.trace('[updateProjectRowName] ends');
+}
+
+// ----------------------------------------------------------
 // Init — expose functions window needs for inline onclick handlers
 // ----------------------------------------------------------
 export function initSidebar() {
