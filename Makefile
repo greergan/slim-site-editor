@@ -12,8 +12,8 @@ version:
 		echo "no commits since last tag ($$LAST_TAG)"; \
 		exit 0; \
 	fi; \
-	HAS_FEATURE=$$(echo "$$COMMITS" | grep -c "^.\+ feature:"); \
-	HAS_PATCH=$$(echo "$$COMMITS" | grep -cE "^.\+ (fix|config|docs):"); \
+	HAS_FEATURE=$$(echo "$$COMMITS" | grep -cE "^[^ ]+ feature:"); \
+	HAS_PATCH=$$(echo "$$COMMITS" | grep -cE "^[^ ]+ (fix|config|docs):"); \
 	if [ "$$HAS_FEATURE" -eq 0 ] && [ "$$HAS_PATCH" -eq 0 ]; then \
 		echo "no usable commits since last tag ($$LAST_TAG)"; \
 		exit 0; \
@@ -34,3 +34,5 @@ version:
 	git commit -m "config: bump version to $$NEW_TAG"; \
 	git tag $$NEW_TAG; \
 	echo "tagged $$LAST_TAG -> $$NEW_TAG"
+
+
