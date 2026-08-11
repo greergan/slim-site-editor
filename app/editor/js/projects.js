@@ -2,7 +2,7 @@
 
 import { setStatus }                    from './editor.js';
 import { loadProjects, expandProjectRow } from './sidebar.js';
-import { showView }                      from './editor-view.js';
+import { showView, updatePreview }       from './editor-view.js';
 
 // ----------------------------------------------------------
 // Config auto-save state
@@ -16,6 +16,11 @@ let _configDebounce = null;
 let _postDir      = null;
 let _postSlug     = null;
 let _postDebounce = null;
+
+// ----------------------------------------------------------
+// Active project artifacts dir — set when a post is opened
+// ----------------------------------------------------------
+let _artifactsDir = null;
 
 // ----------------------------------------------------------
 // Collapse Add Project section
@@ -263,8 +268,11 @@ export async function openPost(dir, slug) {
     console.trace('[openPost] begins');
     console.debug('[openPost] dir =>', dir, 'slug =>', slug);
 
-    _postDir  = dir;
-    _postSlug = slug;
+    _postDir      = dir;
+    _postSlug     = slug;
+    _artifactsDir = dir + '/artifacts';
+
+    console.debug('[openPost] _artifactsDir =>', _artifactsDir);
 
     const data = await window.api.getPost({ dir, slug });
 
@@ -287,8 +295,8 @@ export async function openPost(dir, slug) {
     document.getElementById('field-pinned-order').value = post.pinnedOrder  || '';
     document.getElementById('body-editor').value        = post.body         || '';
 
-    // trigger live preview
-    document.getElementById('preview-content').innerHTML = post.body || '';
+    // trigger themed live preview
+    updatePreview(post.body || '', _artifactsDir);
 
     document.getElementById('save-status').textContent = '';
 
@@ -314,13 +322,15 @@ export function onMetaChange() {
 }
 
 // ----------------------------------------------------------
-// Body input — update preview + debounced auto-save
+// Body input — update themed preview + debounced auto-save
 // ----------------------------------------------------------
 export function onBodyInput() {
     console.trace('[onBodyInput] begins');
 
     const html = document.getElementById('body-editor').value;
-    document.getElementById('preview-content').innerHTML = html;
+
+    // update themed preview
+    updatePreview(html, _artifactsDir);
 
     document.getElementById('save-status').textContent = 'saving...';
 

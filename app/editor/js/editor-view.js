@@ -61,21 +61,63 @@ export function setViewMode(mode) {
 }
 
 // ----------------------------------------------------------
-// Live preview — fires on every body keystroke
+// Live preview — writes themed srcdoc into iframe
+// artifactsDir: absolute path to project's artifacts/ dir
+// body: raw HTML string from body-editor
 // ----------------------------------------------------------
-export function onBodyInput() {
-    console.trace('[onBodyInput] begins');
+export function updatePreview(body, artifactsDir) {
+    console.trace('[updatePreview] begins');
+    console.debug('[updatePreview] artifactsDir =>', artifactsDir);
 
-    const html =
-        document.getElementById('body-editor').value;
+    const frame = document.getElementById('preview-frame');
 
-    document.getElementById('preview-content').innerHTML = html;
+    if (!frame) {
+        console.debug('[updatePreview] preview-frame not found — skipping');
+        console.trace('[updatePreview] ends');
+        return;
+    }
 
-    console.trace('[onBodyInput] ends');
+    if (!artifactsDir) {
+        console.debug('[updatePreview] no artifactsDir — rendering plain body');
+        frame.srcdoc = body || '';
+        console.trace('[updatePreview] ends');
+        return;
+    }
+
+    const cssPath = 'file://' + artifactsDir + '/assets/style.css';
+    const jsPath  = 'file://' + artifactsDir + '/assets/theme.js';
+
+    console.debug('[updatePreview] cssPath =>', cssPath);
+    console.debug('[updatePreview] jsPath  =>', jsPath);
+
+    const srcdoc = [
+        '<!DOCTYPE html>',
+        '<html>',
+        '<head>',
+        '<meta charset="utf-8">',
+        '<link rel="stylesheet" href="' + cssPath + '">',
+        '</head>',
+        '<body>',
+        '<div class="site-wrap">',
+        '<article>',
+        '<div class="post-body">',
+        body || '',
+        '</div>',
+        '</article>',
+        '</div>',
+        '<script src="' + jsPath + '"><\/script>',
+        '</body>',
+        '</html>'
+    ].join('\n');
+
+    frame.srcdoc = srcdoc;
+
+    console.trace('[updatePreview] ends');
 }
 
 // ----------------------------------------------------------
-// Meta field change
+// onBodyInput — called from projects.js, not wired to window here
+// projects.js owns body input handling and calls updatePreview directly
 // ----------------------------------------------------------
 export function onMetaChange() {
     // marks post dirty — save button enable logic goes here
@@ -88,7 +130,6 @@ export function initView() {
     console.trace('[initView] begins');
 
     window.setViewMode  = setViewMode;
-    window.onBodyInput  = onBodyInput;
     window.onMetaChange = onMetaChange;
     window.showView     = showView;
 

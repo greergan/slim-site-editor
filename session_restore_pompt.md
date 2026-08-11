@@ -93,14 +93,6 @@ app/
 - All functions get trace logging at start/end and debug checkpoints
 - Wait for go-ahead before writing code
 
-## Agreed next steps (not yet built, one at a time)
-1. After project creation, auto-expand the new project row in the sidebar
-2. Main area view system: named views (`welcome`, `config-form`, `post-editor`) with `showView(name)` switcher
-3. Config form in main area with auto-save on input
-4. Article tree in sidebar under each project row
-5. Article meta fields in sidebar, wysiwyg body editor in main area
-
-
 ## Always ask to see appropriate file(s) before design
 - what you need might already be involved in some way
 - do not design without proper understanding of current app state
@@ -111,3 +103,6 @@ app/
 
 ## If you give me files and I complain
 - if I complain that something didn't work after you give me updates ask if my disk cache is slow
+
+
+## Agreed next steps (not yet built, one at a time)
