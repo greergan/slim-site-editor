@@ -297,8 +297,6 @@ export function buildProjectAccordion(projects, lastActive) {
             articleList.classList.toggle('open', isOpen);
 
             window.api.setActive({ dir: proj.dir });
-
-            document.getElementById('project-name').textContent = proj.name;
         });
 
         section.appendChild(row);
@@ -351,7 +349,7 @@ export async function loadProjects() {
         });
 
         if (active) {
-            document.getElementById('project-name').textContent = active.name;
+            // active project highlighted in sidebar list
         }
     }
 }

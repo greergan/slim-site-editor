@@ -105,14 +105,4 @@ app/
 
 ## Agreed next steps (not yet built, one at a time)
 ### UI Workflow
-- Click "App Config" in sidebar → App Config form opens in main area
-- Form shows all 5 fields with appropriate controls
-- Changes auto-save debounced to userData via save-app-config IPC
-- Status line shows "saved" confirmation
-- Fields & Controls
-- Field	Control
-- devTools	checkbox
-- defaultProjectDir	text input + folder picker button
-- autoSave	checkbox
-- autoSaveDelay	number input (ms)
-- buildOnSave	checkbox
+- The UI/UX experience should follow industry standards

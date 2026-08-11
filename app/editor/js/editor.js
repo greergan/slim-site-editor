@@ -17,9 +17,22 @@ async function loadPartial(targetId, url) {
 
 // ----------------------------------------------------------
 // Status helpers
+// state: 'idle' | 'info' | 'success' | 'error' | 'warning'
+// success auto-clears after 3s
 // ----------------------------------------------------------
-export function setStatus(msg) {
-    document.getElementById('status').textContent = msg;
+export function setStatus(msg, state = 'idle') {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className   = state;
+
+    if (state === 'success') {
+        setTimeout(function () {
+            if (el.textContent === msg) {
+                el.textContent = '';
+                el.className   = 'idle';
+            }
+        }, 3000);
+    }
 }
 
 export function setSaveStatus(msg) {
@@ -35,10 +48,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadPartial('sidebar', 'partials/sidebar.html');
     await loadPartial('main',    'partials/main.html');
 
-    // set app name from package.json
+    // set window title from package.json
     const name = await window.api.appName();
     document.title = name;
-    document.getElementById('app-name').textContent = name;
 
     // init subsystems
     initSidebar();
