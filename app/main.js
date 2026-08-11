@@ -267,8 +267,8 @@ ipcMain.handle('set-active-project', async function (event, { dir }) {
 
 // -------------------------------------------------------------
 // IPC — remove-project
-// Removes entry from registry by dir
-// Returns { ok }
+// Deletes project directory from disk, removes entry from registry
+// Returns { ok } or { ok, error }
 // -------------------------------------------------------------
 ipcMain.handle('remove-project', async function (event, { dir }) {
     log.trace({func: 'remove-project', msg: 'begins', file: __filename, line: 0});
@@ -279,6 +279,15 @@ ipcMain.handle('remove-project', async function (event, { dir }) {
             log.debug({func: 'remove-project', msg: 'missing dir', file: __filename, line: 0});
             log.trace({func: 'remove-project', msg: 'ends', file: __filename, line: 0});
             return { ok: false, error: 'dir is required' };
+        }
+
+        const absDir = path.resolve(dir);
+
+        if (fs.existsSync(absDir)) {
+            fs.rmSync(absDir, { recursive: true, force: true });
+            log.debug({func: 'remove-project', msg: `directory deleted => ${absDir}`, file: __filename, line: 0});
+        } else {
+            log.debug({func: 'remove-project', msg: `directory not found on disk, skipping delete => ${absDir}`, file: __filename, line: 0});
         }
 
         const reg = registry.load(app.getPath('userData'));
@@ -297,6 +306,20 @@ ipcMain.handle('remove-project', async function (event, { dir }) {
         log.trace({func: 'remove-project', msg: 'ends', file: __filename, line: 0});
         return { ok: false, error: e.message };
     }
+});
+
+// -------------------------------------------------------------
+// IPC — archive-project
+// Stub — to be wired in next phase
+// Returns { ok }
+// -------------------------------------------------------------
+ipcMain.handle('archive-project', async function (event, { dir }) {
+    log.trace({func: 'archive-project', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'archive-project', msg: `dir => ${dir}`, file: __filename, line: 0});
+    log.debug({func: 'archive-project', msg: 'stub — IPC not wired yet', file: __filename, line: 0});
+    log.trace({func: 'archive-project', msg: 'ends', file: __filename, line: 0});
+
+    return { ok: true };
 });
 
 // -------------------------------------------------------------

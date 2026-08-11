@@ -4,6 +4,12 @@ import { setStatus }        from './editor.js';
 import { openProjectConfig } from './projects.js';
 
 // ----------------------------------------------------------
+// Reusable context menu node
+// ----------------------------------------------------------
+let _ctxMenu = null;
+let _ctxDir  = null;
+
+// ----------------------------------------------------------
 // Sidebar toggle
 // ----------------------------------------------------------
 export function toggleSidebar() {
@@ -37,6 +43,101 @@ export async function pickDir(targetInputId) {
     }
 
     document.getElementById(targetInputId).value = dir;
+}
+
+// ----------------------------------------------------------
+// Context menu — create once, reuse
+// ----------------------------------------------------------
+function createContextMenu() {
+    const menu = document.createElement('div');
+
+    menu.id = 'project-ctx-menu';
+    menu.style.cssText =
+        'position:fixed;display:none;z-index:9999;' +
+        'background:#1e1e1e;border:1px solid #444;border-radius:4px;' +
+        'min-width:100px;box-shadow:0 2px 8px rgba(0,0,0,0.5);';
+
+    const itemDelete  = document.createElement('div');
+    const itemArchive = document.createElement('div');
+
+    const itemStyle =
+        'padding:6px 14px;font-size:12px;cursor:pointer;color:#ccc;';
+
+    itemDelete.style.cssText  = itemStyle;
+    itemArchive.style.cssText = itemStyle;
+
+    itemDelete.textContent  = 'Delete';
+    itemArchive.textContent = 'Archive';
+
+    itemDelete.addEventListener('mouseenter', function() {
+        itemDelete.style.background = '#2a2d2e';
+    });
+    itemDelete.addEventListener('mouseleave', function() {
+        itemDelete.style.background = '';
+    });
+    itemArchive.addEventListener('mouseenter', function() {
+        itemArchive.style.background = '#2a2d2e';
+    });
+    itemArchive.addEventListener('mouseleave', function() {
+        itemArchive.style.background = '';
+    });
+
+    itemDelete.addEventListener('click', function(event) {
+        event.stopPropagation();
+        if (!_ctxDir) { return; }
+        const dir = _ctxDir;
+        const ok = confirm('Delete project "' + dir + '"?');
+        hideContextMenu();
+        if (!ok) { return; }
+        window.api.removeProject({ dir: dir }).then(function(result) {
+            if (!result.ok) {
+                window.dispatchEvent(new CustomEvent('app:show-error', { detail: result.error }));
+                return;
+            }
+            setStatus('deleted: ' + dir);
+            loadProjects();
+        });
+    });
+
+    itemArchive.addEventListener('click', function(event) {
+        event.stopPropagation();
+        if (!_ctxDir) { return; }
+        const dir = _ctxDir;
+        hideContextMenu();
+        window.api.archiveProject({ dir: dir }).then(function() {
+            setStatus('archiveProject stub — IPC not wired yet');
+        });
+    });
+
+    menu.appendChild(itemDelete);
+    menu.appendChild(itemArchive);
+    document.body.appendChild(menu);
+
+    return menu;
+}
+
+// ----------------------------------------------------------
+// Show / hide context menu
+// ----------------------------------------------------------
+function showContextMenu(anchorEl, dir) {
+    if (!_ctxMenu) {
+        _ctxMenu = createContextMenu();
+    }
+
+    _ctxDir = dir;
+
+    const rect = anchorEl.getBoundingClientRect();
+
+    _ctxMenu.style.top     = (rect.bottom + 4) + 'px';
+    _ctxMenu.style.left    = rect.left + 'px';
+    _ctxMenu.style.display = 'block';
+}
+
+function hideContextMenu() {
+    if (_ctxMenu) {
+        _ctxMenu.style.display = 'none';
+    }
+    _ctxDir = null;
 }
 
 // ----------------------------------------------------------
@@ -91,6 +192,14 @@ export function buildProjectAccordion(projects, lastActive) {
 
         articleList.appendChild(configItem);
 
+        // ellipsis click — show context menu
+        const ellipsis = row.querySelectorAll(':scope > span')[1];
+
+        ellipsis.addEventListener('click', function(event) {
+            event.stopPropagation();
+            showContextMenu(ellipsis, proj.dir);
+        });
+
         // project row click
         row.addEventListener('click', function() {
             const isOpen = row.classList.toggle('open');
@@ -140,6 +249,11 @@ export function initSidebar() {
     window.toggleSection   = toggleSection;
     window.togglePickerRow = togglePickerRow;
     window.pickDir         = pickDir;
+
+    // dismiss context menu on outside click
+    document.addEventListener('click', function() {
+        hideContextMenu();
+    });
 
     loadProjects();
 }
