@@ -63,7 +63,7 @@ export function setViewMode(mode) {
 // ----------------------------------------------------------
 // Live preview — writes themed srcdoc into iframe
 // artifactsDir: absolute path to project's artifacts/ dir
-// body: raw HTML string from body-editor
+// body: raw HTML string from Quill
 // ----------------------------------------------------------
 export function updatePreview(body, artifactsDir) {
     console.trace('[updatePreview] begins');
@@ -116,8 +116,7 @@ export function updatePreview(body, artifactsDir) {
 }
 
 // ----------------------------------------------------------
-// onBodyInput — called from projects.js, not wired to window here
-// projects.js owns body input handling and calls updatePreview directly
+// Meta field change
 // ----------------------------------------------------------
 export function onMetaChange() {
     // marks post dirty — save button enable logic goes here

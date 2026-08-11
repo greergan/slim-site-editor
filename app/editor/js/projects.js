@@ -1,8 +1,13 @@
 'use strict';
 
-import { setStatus }                    from './editor.js';
+import { setStatus }                      from './editor.js';
 import { loadProjects, expandProjectRow } from './sidebar.js';
-import { showView, updatePreview }       from './editor-view.js';
+import { showView, updatePreview }        from './editor-view.js';
+
+// ----------------------------------------------------------
+// Quill instance — initialized once in initProjects
+// ----------------------------------------------------------
+let _quill = null;
 
 // ----------------------------------------------------------
 // Config auto-save state
@@ -260,7 +265,6 @@ async function saveConfig() {
     console.trace('[saveConfig] ends');
 }
 
-
 // ----------------------------------------------------------
 // Open post — loads post.json, populates editor fields
 // ----------------------------------------------------------
@@ -293,7 +297,11 @@ export async function openPost(dir, slug) {
     document.getElementById('field-readtime').value     = post.readTime     || '';
     document.getElementById('field-pinned').checked     = post.pinned       || false;
     document.getElementById('field-pinned-order').value = post.pinnedOrder  || '';
-    document.getElementById('body-editor').value        = post.body         || '';
+
+    // load body into Quill
+    console.debug('[openPost] loading body into Quill');
+    _quill.setContents([]);
+    _quill.clipboard.dangerouslyPasteHTML(0, post.body || '');
 
     // trigger themed live preview
     updatePreview(post.body || '', _artifactsDir);
@@ -322,25 +330,6 @@ export function onMetaChange() {
 }
 
 // ----------------------------------------------------------
-// Body input — update themed preview + debounced auto-save
-// ----------------------------------------------------------
-export function onBodyInput() {
-    console.trace('[onBodyInput] begins');
-
-    const html = document.getElementById('body-editor').value;
-
-    // update themed preview
-    updatePreview(html, _artifactsDir);
-
-    document.getElementById('save-status').textContent = 'saving...';
-
-    clearTimeout(_postDebounce);
-    _postDebounce = setTimeout(function() { savePost(); }, 500);
-
-    console.trace('[onBodyInput] ends');
-}
-
-// ----------------------------------------------------------
 // Save post to disk via IPC
 // ----------------------------------------------------------
 async function savePost() {
@@ -355,6 +344,10 @@ async function savePost() {
     const tagsRaw = document.getElementById('field-tags').value;
     const tags    = tagsRaw.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
 
+    const body = _quill.root.innerHTML;
+
+    console.debug('[savePost] body length =>', body.length);
+
     const post = {
         slug:        _postSlug,
         title:       document.getElementById('field-title').value,
@@ -364,7 +357,7 @@ async function savePost() {
         tags:        tags,
         pinned:      document.getElementById('field-pinned').checked,
         pinnedOrder: document.getElementById('field-pinned-order').value,
-        body:        document.getElementById('body-editor').value,
+        body:        body,
     };
 
     console.debug('[savePost] saving =>', _postSlug);
@@ -384,6 +377,46 @@ async function savePost() {
 }
 
 // ----------------------------------------------------------
+// Init Quill editor
+// ----------------------------------------------------------
+function initQuill() {
+    console.trace('[initQuill] begins');
+
+    _quill = new Quill('#body-editor', {
+        theme: 'snow',
+        placeholder: 'Post body...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'header': 2 }, { 'header': 3 }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'code-block'],
+                ['link'],
+                ['clean']
+            ]
+        }
+    });
+
+    console.debug('[initQuill] Quill instance created');
+
+    // on every text change — update preview + debounced save
+    _quill.on('text-change', function(delta, oldDelta, source) {
+        console.debug('[quill:text-change] source =>', source);
+
+        const html = _quill.root.innerHTML;
+
+        updatePreview(html, _artifactsDir);
+
+        document.getElementById('save-status').textContent = 'saving...';
+
+        clearTimeout(_postDebounce);
+        _postDebounce = setTimeout(function() { savePost(); }, 500);
+    });
+
+    console.trace('[initQuill] ends');
+}
+
+// ----------------------------------------------------------
 // Init — expose functions window needs for inline onclick handlers
 // ----------------------------------------------------------
 export function initProjects() {
@@ -395,7 +428,8 @@ export function initProjects() {
     window.doRemoteImport   = doRemoteImport;
     window.onConfigInput    = onConfigInput;
     window.onMetaChange     = onMetaChange;
-    window.onBodyInput      = onBodyInput;
+
+    initQuill();
 
     console.trace('[initProjects] ends');
 }
