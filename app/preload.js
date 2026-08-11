@@ -22,9 +22,9 @@ contextBridge.exposeInMainWorld('api', {
     saveAppConfig:  (config) => ipcRenderer.invoke('save-app-config', config),
     // stubs — replaced when main.js IPC handlers are wired
     listPosts:      (args) => ipcRenderer.invoke('list-posts', args),
-    getPost:        () => Promise.resolve({ post: null }),
-    savePost:       () => Promise.resolve({ ok: false }),
-    getConfig:      (args) => ipcRenderer.invoke('get-config', args),
-    saveConfig:     (args) => ipcRenderer.invoke('save-config', args),
+    getPost:        (args) => ipcRenderer.invoke('get-post', args),
+    savePost:       (args) => ipcRenderer.invoke('save-post', args),
+    getConfig:      () => Promise.resolve({ config: null }),
+    saveConfig:     () => Promise.resolve({ ok: false }),
     triggerBuild:   () => Promise.resolve({ ok: false }),
 });

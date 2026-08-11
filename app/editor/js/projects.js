@@ -11,6 +11,13 @@ let _configDir      = null;
 let _configDebounce = null;
 
 // ----------------------------------------------------------
+// Post editor state
+// ----------------------------------------------------------
+let _postDir      = null;
+let _postSlug     = null;
+let _postDebounce = null;
+
+// ----------------------------------------------------------
 // Collapse Add Project section
 // ----------------------------------------------------------
 function collapseAddProject() {
@@ -250,16 +257,120 @@ async function saveConfig() {
 
 
 // ----------------------------------------------------------
-// Open post — stub until post editor is wired (item 5)
+// Open post — loads post.json, populates editor fields
 // ----------------------------------------------------------
-export function openPost(dir, slug) {
+export async function openPost(dir, slug) {
     console.trace('[openPost] begins');
     console.debug('[openPost] dir =>', dir, 'slug =>', slug);
 
-    // TODO: load post and show post-editor view (item 5)
-    setStatus('openPost stub: ' + slug);
+    _postDir  = dir;
+    _postSlug = slug;
+
+    const data = await window.api.getPost({ dir, slug });
+
+    if (!data.ok) {
+        window.dispatchEvent(new CustomEvent('app:show-error', { detail: data.error }));
+        console.trace('[openPost] ends');
+        return;
+    }
+
+    const post = data.post;
+
+    console.debug('[openPost] post loaded =>', JSON.stringify(post).slice(0, 80));
+
+    document.getElementById('field-title').value        = post.title        || '';
+    document.getElementById('field-desc').value         = post.description  || '';
+    document.getElementById('field-date').value         = post.date         || '';
+    document.getElementById('field-tags').value         = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
+    document.getElementById('field-readtime').value     = post.readTime     || '';
+    document.getElementById('field-pinned').checked     = post.pinned       || false;
+    document.getElementById('field-pinned-order').value = post.pinnedOrder  || '';
+    document.getElementById('body-editor').value        = post.body         || '';
+
+    // trigger live preview
+    document.getElementById('preview-content').innerHTML = post.body || '';
+
+    document.getElementById('save-status').textContent = '';
+
+    showView('post-editor');
+
+    setStatus('post: ' + slug);
 
     console.trace('[openPost] ends');
+}
+
+// ----------------------------------------------------------
+// Meta field change — debounced auto-save
+// ----------------------------------------------------------
+export function onMetaChange() {
+    console.trace('[onMetaChange] begins');
+
+    document.getElementById('save-status').textContent = 'saving...';
+
+    clearTimeout(_postDebounce);
+    _postDebounce = setTimeout(function() { savePost(); }, 500);
+
+    console.trace('[onMetaChange] ends');
+}
+
+// ----------------------------------------------------------
+// Body input — update preview + debounced auto-save
+// ----------------------------------------------------------
+export function onBodyInput() {
+    console.trace('[onBodyInput] begins');
+
+    const html = document.getElementById('body-editor').value;
+    document.getElementById('preview-content').innerHTML = html;
+
+    document.getElementById('save-status').textContent = 'saving...';
+
+    clearTimeout(_postDebounce);
+    _postDebounce = setTimeout(function() { savePost(); }, 500);
+
+    console.trace('[onBodyInput] ends');
+}
+
+// ----------------------------------------------------------
+// Save post to disk via IPC
+// ----------------------------------------------------------
+async function savePost() {
+    console.trace('[savePost] begins');
+
+    if (!_postDir || !_postSlug) {
+        console.debug('[savePost] no _postDir or _postSlug — skipping');
+        console.trace('[savePost] ends');
+        return;
+    }
+
+    const tagsRaw = document.getElementById('field-tags').value;
+    const tags    = tagsRaw.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+
+    const post = {
+        slug:        _postSlug,
+        title:       document.getElementById('field-title').value,
+        description: document.getElementById('field-desc').value,
+        date:        document.getElementById('field-date').value,
+        readTime:    document.getElementById('field-readtime').value,
+        tags:        tags,
+        pinned:      document.getElementById('field-pinned').checked,
+        pinnedOrder: document.getElementById('field-pinned-order').value,
+        body:        document.getElementById('body-editor').value,
+    };
+
+    console.debug('[savePost] saving =>', _postSlug);
+
+    const result = await window.api.savePost({ dir: _postDir, slug: _postSlug, post });
+
+    if (!result.ok) {
+        window.dispatchEvent(new CustomEvent('app:show-error', { detail: result.error }));
+        console.trace('[savePost] ends');
+        return;
+    }
+
+    document.getElementById('save-status').textContent = 'saved';
+    setStatus('post saved: ' + _postSlug);
+
+    console.trace('[savePost] ends');
 }
 
 // ----------------------------------------------------------
@@ -273,6 +384,8 @@ export function initProjects() {
     window.doImport         = doImport;
     window.doRemoteImport   = doRemoteImport;
     window.onConfigInput    = onConfigInput;
+    window.onMetaChange     = onMetaChange;
+    window.onBodyInput      = onBodyInput;
 
     console.trace('[initProjects] ends');
 }

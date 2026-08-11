@@ -551,6 +551,77 @@ ipcMain.handle('list-posts', async function (event, { dir }) {
     }
 });
 
+// -------------------------------------------------------------
+// IPC — get-post
+// Reads artifacts/articles/<slug>/post.json from project dir
+// Returns { ok, post } or { ok, error }
+// -------------------------------------------------------------
+ipcMain.handle('get-post', async function (event, { dir, slug }) {
+    log.trace({func: 'get-post', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'get-post', msg: `dir => ${dir}, slug => ${slug}`, file: __filename, line: 0});
+
+    try {
+        if (!dir || !slug) {
+            log.debug({func: 'get-post', msg: 'missing dir or slug', file: __filename, line: 0});
+            log.trace({func: 'get-post', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dir and slug are required' };
+        }
+
+        const postFile = path.join(path.resolve(dir), 'artifacts', 'articles', slug, 'post.json');
+
+        if (!fs.existsSync(postFile)) {
+            log.debug({func: 'get-post', msg: `post not found => ${postFile}`, file: __filename, line: 0});
+            log.trace({func: 'get-post', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'post.json not found: ' + postFile };
+        }
+
+        const raw  = fs.readFileSync(postFile, 'utf8');
+        const post = JSON.parse(raw);
+
+        log.debug({func: 'get-post', msg: `post loaded => ${slug}`, file: __filename, line: 0});
+        log.trace({func: 'get-post', msg: 'ends', file: __filename, line: 0});
+
+        return { ok: true, post };
+    } catch (e) {
+        log.debug({func: 'get-post', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'get-post', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+});
+
+// -------------------------------------------------------------
+// IPC — save-post
+// Writes artifacts/articles/<slug>/post.json to project dir
+// Returns { ok } or { ok, error }
+// -------------------------------------------------------------
+ipcMain.handle('save-post', async function (event, { dir, slug, post }) {
+    log.trace({func: 'save-post', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'save-post', msg: `dir => ${dir}, slug => ${slug}`, file: __filename, line: 0});
+
+    try {
+        if (!dir || !slug || !post) {
+            log.debug({func: 'save-post', msg: 'missing dir, slug, or post', file: __filename, line: 0});
+            log.trace({func: 'save-post', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dir, slug, and post are required' };
+        }
+
+        const postDir  = path.join(path.resolve(dir), 'artifacts', 'articles', slug);
+        const postFile = path.join(postDir, 'post.json');
+
+        fs.mkdirSync(postDir, { recursive: true });
+        fs.writeFileSync(postFile, JSON.stringify(post, null, 2), 'utf8');
+
+        log.debug({func: 'save-post', msg: `post saved => ${slug}`, file: __filename, line: 0});
+        log.trace({func: 'save-post', msg: 'ends', file: __filename, line: 0});
+
+        return { ok: true };
+    } catch (e) {
+        log.debug({func: 'save-post', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'save-post', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', function () {
