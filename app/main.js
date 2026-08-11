@@ -20,6 +20,10 @@ if (process.env.NODE_ENV === 'development') {
     });
 }
 
+// -------------------------------------------------------------
+// Scaffold source — bundled defaults copied into every new project
+// -------------------------------------------------------------
+const SCAFFOLD_DIR = path.join(__dirname, 'scaffold');
 
 function createWindow() {
     const cfg = appConfig.load(app.getPath('userData'));
@@ -108,6 +112,8 @@ ipcMain.handle('list-projects', async function (event) {
 // -------------------------------------------------------------
 // IPC — new-project
 // Scaffolds a new project directory structure
+// Copies bundled scaffold files into place
+// Writes config.json and default first article
 // Adds to registry and sets as last active
 // Returns { ok, dir } or { ok, error }
 // -------------------------------------------------------------
@@ -134,25 +140,47 @@ ipcMain.handle('new-project', async function (event, { parentDir, name }) {
         const projectDir = absParent;
         log.debug({func: 'new-project', msg: `project dir => ${projectDir}`, file: __filename, line: 0});
 
-        fs.mkdirSync(path.join(projectDir, 'artifacts'), { recursive: true });
-        log.debug({func: 'new-project', msg: 'created artifacts/', file: __filename, line: 0});
-
+        // create directory structure
         fs.mkdirSync(path.join(projectDir, 'artifacts', 'articles'), { recursive: true });
         log.debug({func: 'new-project', msg: 'created artifacts/articles/', file: __filename, line: 0});
 
-        fs.mkdirSync(path.join(projectDir, 'templates'), { recursive: true });
-        log.debug({func: 'new-project', msg: 'created templates/', file: __filename, line: 0});
+        fs.mkdirSync(path.join(projectDir, 'artifacts', 'assets'), { recursive: true });
+        log.debug({func: 'new-project', msg: 'created artifacts/assets/', file: __filename, line: 0});
+
+        fs.mkdirSync(path.join(projectDir, 'artifacts', 'templates'), { recursive: true });
+        log.debug({func: 'new-project', msg: 'created artifacts/templates/', file: __filename, line: 0});
 
         fs.mkdirSync(path.join(projectDir, 'dist'), { recursive: true });
         log.debug({func: 'new-project', msg: 'created dist/', file: __filename, line: 0});
 
-        // scaffold artifacts/config.json
+        // copy scaffold assets
+        const scaffoldAssets = path.join(SCAFFOLD_DIR, 'artifacts', 'assets');
+        fs.readdirSync(scaffoldAssets).forEach(function (file) {
+            fs.copyFileSync(
+                path.join(scaffoldAssets, file),
+                path.join(projectDir, 'artifacts', 'assets', file)
+            );
+            log.debug({func: 'new-project', msg: `copied assets/${file}`, file: __filename, line: 0});
+        });
+
+        // copy scaffold templates
+        const scaffoldTemplates = path.join(SCAFFOLD_DIR, 'artifacts', 'templates');
+        fs.readdirSync(scaffoldTemplates).forEach(function (file) {
+            fs.copyFileSync(
+                path.join(scaffoldTemplates, file),
+                path.join(projectDir, 'artifacts', 'templates', file)
+            );
+            log.debug({func: 'new-project', msg: `copied templates/${file}`, file: __filename, line: 0});
+        });
+
+        // write artifacts/config.json with defaults
         const config = {
-            name,
-            siteTitle:   name,
-            siteUrl:     '',
-            author:      '',
-            currentYear: new Date().getFullYear()
+            siteTitle:   'My Site',
+            sitePrompt:  'user@site',
+            siteDesc:    'A new site',
+            currentYear: String(new Date().getFullYear()),
+            siteUrl:     'https://example.com',
+            author:      'author'
         };
         fs.writeFileSync(
             path.join(projectDir, 'artifacts', 'config.json'),
@@ -160,6 +188,27 @@ ipcMain.handle('new-project', async function (event, { parentDir, name }) {
             'utf8'
         );
         log.debug({func: 'new-project', msg: 'wrote artifacts/config.json', file: __filename, line: 0});
+
+        // write default first article
+        const firstArticleDir = path.join(projectDir, 'artifacts', 'articles', 'my-first-post');
+        fs.mkdirSync(firstArticleDir, { recursive: true });
+        const firstArticle = {
+            slug:        'my-first-post',
+            title:       'The Light on Rue Cler',
+            description: 'A Tuesday morning in Paris that tasted like butter and went sideways by noon.',
+            date:        new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+            readTime:    '3 min read',
+            tags:        ['travel', 'food', 'paris'],
+            pinned:      true,
+            pinnedOrder: 1,
+            body:        '<p>The bakery on Rue Cler opens at seven, but the smell reaches the corner by six-thirty. I had been awake since five, jet-lagged and restless, watching the street lights go amber in the rain.</p><p>I ordered a croissant and a <em>caf\u00e9 serr\u00e9</em> and sat at the only table not folded against the wall. The woman behind the counter did not smile, which felt correct. This was not a place for tourists, even if tourists were the only ones sitting down.</p><h2>The Market</h2><p>By nine the street had filled. Vendors in rubber aprons arranged tomatoes by size. A man argued quietly with a cheese seller, gesturing at a wedge of something orange and ancient. Nobody was in a hurry. Everybody had somewhere to be.</p><p>I bought three things I could not name and ate two of them standing up. The third I carried in a paper bag until it went soft in the heat.</p><h2>How It Went Sideways</h2><p>The metro was closed for works. My map was a day old. I ended up in the 15th arrondissement, which is not where I intended to be, but where I found a lunch counter serving <em>pot-au-feu</em> for nine euros and a carafe of something red that tasted like it had been stored in someone\'s garage since 2019.</p><p>It was, without question, the best meal of the trip.</p><p>More cities soon.</p>'
+        };
+        fs.writeFileSync(
+            path.join(firstArticleDir, 'post.json'),
+            JSON.stringify(firstArticle, null, 2),
+            'utf8'
+        );
+        log.debug({func: 'new-project', msg: 'wrote artifacts/articles/my-first-post/post.json', file: __filename, line: 0});
 
         // update registry
         const reg = registry.load(app.getPath('userData'));
@@ -217,7 +266,7 @@ ipcMain.handle('import-project', async function (event, { dir }) {
         try {
             const raw    = fs.readFileSync(configFile, 'utf8');
             const config = JSON.parse(raw);
-            name = config.name || path.basename(absDir);
+            name = config.siteTitle || path.basename(absDir);
         } catch (e) {
             log.debug({func: 'import-project', msg: `config parse error => ${e.message}`, file: __filename, line: 0});
             name = path.basename(absDir);

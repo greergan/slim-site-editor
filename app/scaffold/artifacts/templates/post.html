@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{POST_DESC}}" />
+  <meta name="author" content="{{AUTHOR}}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{{CANONICAL_URL}}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{{POST_TITLE}}" />
+  <meta property="og:description" content="{{POST_DESC}}" />
+  <meta property="og:url" content="{{CANONICAL_URL}}" />
+  <meta property="og:image" content="{{OG_IMAGE_URL}}" />
+  <meta property="article:published_time" content="{{POST_DATE}}" />
+  {{ARTICLE_TAGS}}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{POST_TITLE}}" />
+  <meta name="twitter:description" content="{{POST_DESC}}" />
+  <meta name="twitter:image" content="{{OG_IMAGE_URL}}" />
+  <title>{{POST_TITLE}} — {{SITE_TITLE}}</title>
+  <link rel="stylesheet" href="{{ASSET_PREFIX}}style.css" />
+</head>
+<body>
+  <div class="site-wrap">
+
+    <header class="site-header">
+      <p class="prompt">{{SITE_PROMPT}}:~$</p>
+      <h1 class="site-title site-title--breadcrumb">
+        <a href="{{ASSET_PREFIX}}index.html">~{{SITE_TITLE}}</a><span class="cursor"></span>/<a href="../index.html">{{POST_TAG_NAME}}</a>/<span>{{POST_SLUG}}</span>
+      </h1>
+      <p class="site-desc">{{SITE_DESC}}</p>
+    </header>
+
+    {{NAV_ITEMS}}
+
+    <article>
+      <header class="post-header">
+        <h1>{{POST_TITLE}}</h1>
+        <p class="post-desc">{{POST_DESC}}</p>
+        <p class="post-meta">
+          <span>{{POST_DATE}}</span>
+          <span>{{POST_READ_TIME}}</span>
+          <span class="post-tags">{{POST_TAGS}}</span>
+        </p>
+      </header>
+
+      <div class="post-body">
+        {{POST_CONTENT}}
+      </div>
+    </article>
+
+    <footer class="site-footer">
+      <span>{{SITE_TITLE}} &copy; {{CURRENT_YEAR}}</span>
+    </footer>
+
+  </div>
+
+  <script src="{{ASSET_PREFIX}}theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{SITE_DESC}}" />
+  <meta name="author" content="{{AUTHOR}}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{{CANONICAL_URL}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{SITE_TITLE}}" />
+  <meta property="og:description" content="{{SITE_DESC}}" />
+  <meta property="og:url" content="{{CANONICAL_URL}}" />
+  <meta property="og:image" content="{{OG_IMAGE_URL}}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{SITE_TITLE}}" />
+  <meta name="twitter:description" content="{{SITE_DESC}}" />
+  <meta name="twitter:image" content="{{OG_IMAGE_URL}}" />
+  <title>{{SITE_TITLE}}</title>
+  <link rel="stylesheet" href="{{ASSET_PREFIX}}style.css" />
+</head>
+<body>
+  <div class="site-wrap">
+
+    <header class="site-header">
+      <p class="prompt">{{SITE_PROMPT}}:~$</p>
+      <h1 class="site-title">
+        <a href="/">~{{SITE_TITLE}}</a><span class="cursor"></span>
+      </h1>
+      <p class="site-desc">{{SITE_DESC}}</p>
+    </header>
+
+    {{NAV_ITEMS}}
+
+    <main>
+      <ul class="post-list">
+        {{POST_LIST_ITEMS}}
+      </ul>
+    </main>
+
+    <footer class="site-footer">
+      <span>{{SITE_TITLE}} &copy; {{CURRENT_YEAR}}</span>
+    </footer>
+
+  </div>
+
+  <script src="{{ASSET_PREFIX}}theme.js"></script>
+</body>
+</html>
