@@ -28,7 +28,7 @@ function createWindow() {
         }
     });
 
-    win.loadFile(path.join(__dirname, 'editor.html'));
+    win.loadFile(path.join(__dirname, 'editor/index.html'));
 
     // open devtools if enabled in app config
     if (cfg.devTools) win.webContents.openDevTools();

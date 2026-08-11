@@ -568,3 +568,77 @@ body {
 }
 
 #error-modal-ok:hover { background: #1177bb; }
+
+/* ---- add project tab strip ---- */
+#add-project-tabs {
+  display: flex;
+  border-bottom: 1px solid #333;
+}
+
+.ap-tab {
+  flex: 1;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ap-tab:hover { color: #ccc; background: #2a2d2e; }
+
+.ap-tab.active {
+  color: #569cd6;
+  border-bottom-color: #569cd6;
+  background: #252526;
+}
+
+/* ---- add project forms ---- */
+.ap-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.ap-form label {
+  font-size: 10px;
+  color: #888;
+}
+
+.ap-form input {
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #555;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 12px;
+  width: 100%;
+}
+
+.ap-form input[readonly] {
+  color: #666;
+  cursor: default;
+}
+
+.ap-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.ap-form-actions button {
+  background: #0e639c;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ap-form-actions button:hover { background: #1177bb; }

@@ -1,0 +1,70 @@
+<!-- APP CONFIG -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>App Config</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="app-config-section">
+  <div class="config-nav-item" id="nav-app-config" onclick="openAppConfig()">app-config.json</div>
+</div>
+
+<!-- ADD PROJECT -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>Add Project</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="add-project-section">
+
+  <!-- tab strip -->
+  <div id="add-project-tabs">
+    <button class="ap-tab active" onclick="setAddProjectTab('new')">New</button>
+    <button class="ap-tab" onclick="setAddProjectTab('import')">Import</button>
+    <button class="ap-tab" onclick="setAddProjectTab('remote')">Remote</button>
+  </div>
+
+  <!-- New -->
+  <div class="ap-form" id="ap-form-new">
+    <label>Parent directory</label>
+    <div class="picker-field">
+      <input id="new-project-parent" type="text" placeholder="/home/user/sites" />
+      <button class="pick-btn" onclick="pickDir('new-project-parent')" title="Browse">&#128193;</button>
+    </div>
+    <label>Project name</label>
+    <input id="new-project-name" type="text" placeholder="My Blog" />
+    <div class="ap-form-actions">
+      <button onclick="doNewProject()">Create</button>
+    </div>
+  </div>
+
+  <!-- Import -->
+  <div class="ap-form" id="ap-form-import" style="display:none;">
+    <label>Project directory</label>
+    <div class="picker-field">
+      <input id="import-input" type="text" placeholder="/home/user/sites/my-blog" />
+      <button class="pick-btn" onclick="pickDir('import-input')" title="Browse">&#128193;</button>
+    </div>
+    <div class="ap-form-actions">
+      <button onclick="doImport()">Import</button>
+    </div>
+  </div>
+
+  <!-- Remote -->
+  <div class="ap-form" id="ap-form-remote" style="display:none;">
+    <label>Repo URL</label>
+    <input id="remote-repo-url" type="text" placeholder="https://github.com/user/repo" />
+    <label>Local destination</label>
+    <input id="remote-local-dest" type="text" readonly placeholder="loading..." />
+    <div class="ap-form-actions">
+      <button onclick="doRemoteImport()">Import</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROJECTS -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>Projects</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="projects-section">
+  <!-- project accordion rows injected here by loadProjects() -->
+</div>

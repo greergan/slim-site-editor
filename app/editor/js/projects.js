@@ -4,6 +4,32 @@ import { setStatus } from './editor.js';
 import { loadProjects } from './sidebar.js';
 
 // ----------------------------------------------------------
+// Tab switcher
+// ----------------------------------------------------------
+export function setAddProjectTab(tab) {
+    document.querySelectorAll('.ap-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === tab);
+    });
+
+    document.getElementById('ap-form-new').style.display    = tab === 'new'    ? 'flex' : 'none';
+    document.getElementById('ap-form-import').style.display = tab === 'import' ? 'flex' : 'none';
+    document.getElementById('ap-form-remote').style.display = tab === 'remote' ? 'flex' : 'none';
+
+    if (tab === 'remote') {
+        populateRemoteDest();
+    }
+}
+
+// ----------------------------------------------------------
+// Populate remote local destination from app data dir
+// ----------------------------------------------------------
+async function populateRemoteDest() {
+    // TODO: const dir = await window.api.getAppDataDir();
+    // document.getElementById('remote-local-dest').value = dir;
+    document.getElementById('remote-local-dest').value = 'stub — IPC not wired yet';
+}
+
+// ----------------------------------------------------------
 // New project
 // ----------------------------------------------------------
 export async function doNewProject() {
@@ -26,8 +52,6 @@ export async function doNewProject() {
 
     document.getElementById('new-project-parent').value = '';
     document.getElementById('new-project-name').value   = '';
-
-    document.getElementById('new-project-row').classList.remove('open');
 
     setStatus('created: ' + result.dir);
 
@@ -54,11 +78,27 @@ export async function doImport() {
 
     document.getElementById('import-input').value = '';
 
-    document.getElementById('import-row').classList.remove('open');
-
     setStatus('imported: ' + result.dir);
 
     await loadProjects();
+}
+
+// ----------------------------------------------------------
+// Remote import
+// ----------------------------------------------------------
+export async function doRemoteImport() {
+    const repoUrl =
+        document.getElementById('remote-repo-url').value.trim();
+
+    const localDest =
+        document.getElementById('remote-local-dest').value.trim();
+
+    if (!repoUrl || !localDest) {
+        return;
+    }
+
+    // TODO: const result = await window.api.remoteImport({ repoUrl, localDest });
+    setStatus('doRemoteImport stub — IPC not wired yet');
 }
 
 // ----------------------------------------------------------
@@ -74,6 +114,8 @@ export async function openProjectConfig(projectDir) {
 // Init — expose functions window needs for inline onclick handlers
 // ----------------------------------------------------------
 export function initProjects() {
-    window.doNewProject = doNewProject;
-    window.doImport     = doImport;
+    window.setAddProjectTab = setAddProjectTab;
+    window.doNewProject     = doNewProject;
+    window.doImport         = doImport;
+    window.doRemoteImport   = doRemoteImport;
 }
