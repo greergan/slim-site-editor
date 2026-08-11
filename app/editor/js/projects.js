@@ -1,7 +1,7 @@
 'use strict';
 
 import { setStatus }   from './editor.js';
-import { loadProjects } from './sidebar.js';
+import { loadProjects, expandProjectRow } from './sidebar.js';
 
 // ----------------------------------------------------------
 // Collapse Add Project section
@@ -69,6 +69,8 @@ export async function doNewProject() {
     collapseAddProject();
 
     await loadProjects();
+
+    expandProjectRow(result.dir);
 }
 
 // ----------------------------------------------------------
@@ -96,6 +98,8 @@ export async function doImport() {
     collapseAddProject();
 
     await loadProjects();
+
+    expandProjectRow(result.dir);
 }
 
 // ----------------------------------------------------------

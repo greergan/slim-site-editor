@@ -225,6 +225,31 @@ export function buildProjectAccordion(projects, lastActive) {
 }
 
 // ----------------------------------------------------------
+// Expand a project row by dir path
+// Called after new/import to open the row without user click
+// ----------------------------------------------------------
+export function expandProjectRow(dir) {
+    console.trace('[expandProjectRow] begins');
+
+    const section     = document.getElementById('projects-section');
+    const row         = section.querySelector('.project-row[data-dir="' + dir + '"]');
+    const articleList = section.querySelector('.article-list[data-dir="' + dir + '"]');
+
+    console.debug('[expandProjectRow] dir =>', dir);
+
+    if (!row || !articleList) {
+        console.debug('[expandProjectRow] row or articleList not found — skipping');
+        console.trace('[expandProjectRow] ends');
+        return;
+    }
+
+    row.classList.add('open');
+    articleList.classList.add('open');
+
+    console.trace('[expandProjectRow] ends');
+}
+
+// ----------------------------------------------------------
 // Load projects — calls IPC, builds accordion
 // ----------------------------------------------------------
 export async function loadProjects() {
