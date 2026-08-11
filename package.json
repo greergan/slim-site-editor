@@ -1,0 +1,13 @@
+{
+  "name": "slim-editor",
+  "version": "0.1.0",
+  "description": "Slim site editor",
+  "main": "main.js",
+  "scripts": {
+    "start": "NODE_ENV=development electron --no-sandbox ./app/main.js"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-reload": "^2.0.0-alpha.1"
+  }
+}
