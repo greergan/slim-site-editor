@@ -1,6 +1,6 @@
 {
   "name": "slim-editor",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Slim site editor",
   "main": "main.js",
   "scripts": {
