@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slim site editor</title>
+  <link rel="stylesheet" href="css/editor.css" />
+</head>
+<body>
+
+<!-- topbar -->
+<div id="topbar">
+  <button id="menu-toggle" onclick="toggleSidebar()" title="Toggle sidebar">&#9776;</button>
+  <span id="app-name" style="font-size:13px;color:#569cd6;font-weight:bold;"></span>
+  <span style="color:#555;">|</span>
+  <span id="project-name">— no project —</span>
+  <div id="topbar-actions">
+    <button class="topbar-btn" id="btn-save"  onclick="doSave()"  disabled>Save</button>
+    <button class="topbar-btn" id="btn-build" onclick="doBuild()" disabled>Build</button>
+    <span id="status">ready</span>
+  </div>
+</div>
+
+<!-- body row -->
+<div id="body-row">
+  <div id="sidebar"><!-- injected by loader --></div>
+  <div id="main"><!-- injected by loader --></div>
+</div>
+
+<!-- error modal -->
+<div id="error-modal-overlay">
+  <div id="error-modal">
+    <div id="error-modal-title">Error</div>
+    <div id="error-modal-msg"></div>
+    <button id="error-modal-ok" onclick="hideError()">OK</button>
+  </div>
+</div>
+
+<script type="module" src="js/editor.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!-- APP CONFIG -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>App Config</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="app-config-section">
+  <div class="config-nav-item" id="nav-app-config" onclick="openAppConfig()">app-config.json</div>
+</div>
+
+<!-- ADD PROJECT -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>Add Project</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="add-project-section">
+
+  <!-- New Project -->
+  <button class="sidebar-action top-level" onclick="togglePickerRow('new-project-row')">+ New Project</button>
+  <div class="picker-row" id="new-project-row">
+    <label style="font-size:11px;color:#888;">Parent directory</label>
+    <div class="picker-field">
+      <input id="new-project-parent" type="text" placeholder="e.g. /home/user/sites" />
+      <button class="pick-btn" onclick="pickDir('new-project-parent')" title="Browse">&#128193;</button>
+    </div>
+    <label style="font-size:11px;color:#888;">Project name</label>
+    <input id="new-project-name" type="text" placeholder="My Blog" />
+    <div class="picker-row-actions">
+      <button onclick="doNewProject()">Create</button>
+    </div>
+  </div>
+
+  <!-- Import Project -->
+  <button class="sidebar-action top-level" onclick="togglePickerRow('import-row')">+ Import Project</button>
+  <div class="picker-row" id="import-row">
+    <label style="font-size:11px;color:#888;">Project directory</label>
+    <div class="picker-field">
+      <input id="import-input" type="text" placeholder="e.g. /home/user/sites/my-blog" />
+      <button class="pick-btn" onclick="pickDir('import-input')" title="Browse">&#128193;</button>
+    </div>
+    <div class="picker-row-actions">
+      <button onclick="doImport()">Import</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROJECTS -->
+<div class="sidebar-section-header open" onclick="toggleSection(this)">
+  <span>Projects</span>
+  <span class="arrow">&#9658;</span>
+</div>
+<div class="sidebar-section-body open" id="projects-section">
+  <!-- project accordion rows injected here by loadProjects() -->
+</div>

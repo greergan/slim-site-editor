@@ -1,0 +1,59 @@
+<!-- empty state -->
+<div id="empty-state">open or create a project to get started</div>
+
+<!-- view mode toggle bar (Edit / Split / Preview) -->
+<div id="view-bar">
+  <button class="view-btn" id="vbtn-edit"    onclick="setViewMode('edit')">Edit</button>
+  <button class="view-btn active" id="vbtn-split" onclick="setViewMode('split')">Split</button>
+  <button class="view-btn" id="vbtn-preview" onclick="setViewMode('preview')">Preview</button>
+</div>
+
+<!-- work area -->
+<div id="work-area" class="mode-split">
+
+  <!-- edit pane -->
+  <div id="edit-pane">
+    <div id="meta-fields">
+      <label>Title
+        <input id="field-title" type="text" oninput="onMetaChange()" />
+      </label>
+      <label>Description
+        <input id="field-desc" type="text" oninput="onMetaChange()" />
+      </label>
+      <label>Date
+        <input id="field-date" type="date" oninput="onMetaChange()" />
+      </label>
+      <label>Tags (comma-sep)
+        <input id="field-tags" type="text" oninput="onMetaChange()" />
+      </label>
+      <label>Read time
+        <input id="field-readtime" type="text" oninput="onMetaChange()" />
+      </label>
+      <label>Pinned
+        <input id="field-pinned" type="checkbox" onchange="onMetaChange()" />
+      </label>
+      <label>Pinned order
+        <input id="field-pinned-order" type="text" style="width:60px;" oninput="onMetaChange()" />
+      </label>
+    </div>
+
+    <!-- body editor -->
+    <textarea id="body-editor" placeholder="Post body (HTML)..." oninput="onBodyInput()"></textarea>
+
+    <!-- save bar -->
+    <div id="save-bar">
+      <button onclick="doSave()">Save</button>
+      <span id="save-status"></span>
+    </div>
+  </div><!-- /edit-pane -->
+
+  <!-- preview pane -->
+  <div id="preview-pane">
+    <div id="preview-label">Live Preview</div>
+    <div id="preview-content"></div>
+  </div>
+
+</div><!-- /work-area -->
+
+<!-- raw / config editor (shown instead of work-area for config files) -->
+<textarea id="raw-editor" placeholder=""></textarea>
