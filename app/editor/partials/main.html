@@ -89,28 +89,53 @@
 <!-- app config form -->
 <div id="app-config-form">
   <div id="app-config-form-header">App Config</div>
-  <div id="app-config-form-fields">
-    <label>App Data Directory
-      <input id="acfg-userDataPath" type="text" readonly />
-    </label>
-    <label>Developer Tools
-      <input id="acfg-devTools" type="checkbox" onchange="onAppConfigInput()" />
-    </label>
-    <label>Default Project Directory
-      <div class="picker-field">
-        <input id="acfg-defaultProjectDir" type="text" oninput="onAppConfigInput()" />
-        <button class="pick-btn" onclick="pickAppConfigDir()" title="Browse">&#128193;</button>
+  <div id="app-config-form-body">
+
+    <!-- Storage -->
+    <div class="acfg-section">
+      <div class="acfg-section-label">Storage</div>
+      <div class="acfg-field">
+        <span class="acfg-label">App Data Directory</span>
+        <input id="acfg-userDataPath" type="text" readonly />
       </div>
-    </label>
-    <label>Auto Save
-      <input id="acfg-autoSave" type="checkbox" onchange="onAppConfigInput()" />
-    </label>
-    <label>Auto Save Delay (ms)
-      <input id="acfg-autoSaveDelay" type="number" min="500" step="100" oninput="onAppConfigInput()" />
-    </label>
-    <label>Build on Save
-      <input id="acfg-buildOnSave" type="checkbox" onchange="onAppConfigInput()" />
-    </label>
+      <div class="acfg-field">
+        <span class="acfg-label">Default Project Directory</span>
+        <div class="picker-field">
+          <input id="acfg-defaultProjectDir" type="text" oninput="onAppConfigInput()" />
+          <button class="pick-btn" onclick="pickAppConfigDir()" title="Browse">&#128193;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Build -->
+    <div class="acfg-section">
+      <div class="acfg-section-label">Build</div>
+      <div class="acfg-field acfg-field-check">
+        <span class="acfg-label">Enable Build on Save</span>
+        <input id="acfg-buildOnSave" type="checkbox" onchange="onAppConfigInput()" />
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="acfg-section">
+      <div class="acfg-section-label">Editor</div>
+      <div class="acfg-field acfg-field-check">
+        <span class="acfg-label">Enable Developer Tools</span>
+        <input id="acfg-devTools" type="checkbox" onchange="onAppConfigInput()" />
+      </div>
+      <div class="acfg-field acfg-field-check">
+        <span class="acfg-label">Enable Auto Save</span>
+        <input id="acfg-autoSave" type="checkbox" onchange="onAppConfigInput()" />
+      </div>
+      <div class="acfg-field">
+        <span class="acfg-label">Auto Save Delay</span>
+        <div class="acfg-input-with-unit">
+          <input id="acfg-autoSaveDelay" type="number" min="500" step="100" oninput="onAppConfigInput()" />
+          <span class="acfg-unit">ms</span>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div id="app-config-form-status"></div>
 </div>

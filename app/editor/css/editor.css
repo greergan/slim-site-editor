@@ -582,81 +582,133 @@ body {
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
-  padding: 24px 32px;
+  padding: 32px 40px;
 }
 
-#app-config-form.visible {
-  display: flex;
-}
+#app-config-form.visible { display: flex; }
 
 #app-config-form-header {
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 20px;
+  letter-spacing: 0.1em;
+  color: #569cd6;
+  margin-bottom: 28px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #333;
-  padding-bottom: 8px;
 }
 
-#app-config-form-fields {
+#app-config-form-body {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 32px;
+  max-width: 560px;
 }
 
-#app-config-form-fields label {
+.acfg-section {
   display: flex;
   flex-direction: column;
-  font-size: 11px;
-  color: #888;
-  gap: 4px;
 }
 
-#app-config-form-fields input[type="text"],
-#app-config-form-fields input[type="number"] {
+.acfg-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.acfg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.acfg-field:last-child { border-bottom: none; }
+
+/* checkbox rows — label left, control right */
+.acfg-field-check {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 360px;
+}
+
+.acfg-label {
+  font-size: 13px;
+  color: #ccc;
+  user-select: none;
+}
+
+.acfg-field input[type="text"],
+.acfg-field input[type="number"] {
   background: #2d2d2d;
   color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 5px 8px;
+  border: 1px solid #3d3d3d;
+  padding: 6px 10px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12px;
   width: 100%;
-  max-width: 480px;
+  max-width: 360px;
   outline: none;
+  transition: border-color 0.1s;
 }
 
-#app-config-form-fields input[type="text"]:focus,
-#app-config-form-fields input[type="number"]:focus {
+.acfg-field input[type="text"]:focus,
+.acfg-field input[type="number"]:focus {
   border-color: #569cd6;
 }
 
-#app-config-form-fields input[readonly] {
-  color: #666;
+.acfg-field input[readonly] {
+  background: #1e1e1e;
+  color: #555;
+  border-color: #2a2a2a;
   cursor: default;
 }
 
-#app-config-form-fields input[type="checkbox"] {
-  margin-top: 4px;
+.acfg-field input[type="number"] {
+  width: 120px;
 }
 
-#app-config-form-fields .picker-field {
+.acfg-field input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #569cd6;
+}
+
+.acfg-input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acfg-unit {
+  font-size: 11px;
+  color: #555;
+}
+
+.acfg-field .picker-field {
   display: flex;
   align-items: center;
   gap: 6px;
-  max-width: 480px;
+  max-width: 360px;
 }
 
-#app-config-form-fields .picker-field input {
+.acfg-field .picker-field input {
   flex: 1;
-  max-width: none;
+  width: auto;
 }
 
 #app-config-form-status {
-  margin-top: 16px;
-  font-size: 12px;
-  color: #888;
+  margin-top: 24px;
+  font-size: 11px;
+  color: #569cd6;
   min-height: 18px;
+  max-width: 560px;
 }
 
 /* ---- error modal ---- */
