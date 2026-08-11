@@ -2,15 +2,22 @@
   "name": "slim-editor",
   "version": "0.12.0",
   "description": "Slim site editor",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
-    "start": "NODE_ENV=development electron --no-sandbox ./app/main.js"
+    "dev": "concurrently \"vite dev --config editor/vite.config.js\" \"NODE_ENV=development electron --no-sandbox app/main.js\"",
+    "build": "vite build --config editor/vite.config.js",
+    "start": "NODE_ENV=development electron --no-sandbox app/main.js"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^8.2.0",
     "electron": "^30.0.0",
-    "electron-reload": "^2.0.0-alpha.1"
+    "electron-reload": "^2.0.0-alpha.1",
+    "vite": "^5.4.0"
   },
   "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "quill": "^2.0.3"
   }
 }
