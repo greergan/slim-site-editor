@@ -417,6 +417,20 @@ function initQuill() {
 }
 
 // ----------------------------------------------------------
+// Open post config — structured form for per-article metadata
+// Stub — form view to be built in next phase
+// ----------------------------------------------------------
+export function openPostConfig(dir, slug) {
+    console.trace('[openPostConfig] begins');
+    console.debug('[openPostConfig] dir =>', dir, 'slug =>', slug);
+
+    // TODO: load post.json fields into a config form view
+    setStatus('post config: ' + slug + ' — not yet implemented');
+
+    console.trace('[openPostConfig] ends');
+}
+
+// ----------------------------------------------------------
 // Init — expose functions window needs for inline onclick handlers
 // ----------------------------------------------------------
 export function initProjects() {

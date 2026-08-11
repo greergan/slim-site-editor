@@ -1,7 +1,7 @@
 'use strict';
 
 import { setStatus }        from './editor.js';
-import { openProjectConfig, openPost } from './projects.js';
+import { openProjectConfig, openPost, openPostConfig } from './projects.js';
 
 // ----------------------------------------------------------
 // Reusable context menu node
@@ -150,10 +150,26 @@ function hideContextMenu() {
 
 // ----------------------------------------------------------
 // Load article list into a project's article-list div
+// Structure per project:
+//   config.json          (same indent as articles)
+//   ─ Article Title      (article-item)
+//       config           (article-config-item, child of article)
 // ----------------------------------------------------------
 async function loadArticleList(dir, articleList) {
     console.trace('[loadArticleList] begins');
     console.debug('[loadArticleList] dir =>', dir);
+
+    // project config.json — first item, same indent as articles
+    const configItem = document.createElement('div');
+    configItem.className   = 'config-nav-item';
+    configItem.textContent = 'Site Config';
+    configItem.addEventListener('click', function(event) {
+        event.stopPropagation();
+        openProjectConfig(dir);
+    });
+    articleList.appendChild(configItem);
+
+    console.debug('[loadArticleList] config item added');
 
     const data = await window.api.listPosts({ dir });
 
@@ -166,12 +182,16 @@ async function loadArticleList(dir, articleList) {
     console.debug('[loadArticleList] posts =>', data.posts.length);
 
     data.posts.forEach(function (post) {
-        const item = document.createElement('div');
+        // article group wrapper
+        const group = document.createElement('div');
+        group.className = 'article-group';
 
-        item.className       = 'article-item';
-        item.textContent     = post.title || post.slug;
-        item.dataset.slug    = post.slug;
-        item.dataset.dir     = dir;
+        // article title row
+        const item = document.createElement('div');
+        item.className    = 'article-item';
+        item.textContent  = post.title || post.slug;
+        item.dataset.slug = post.slug;
+        item.dataset.dir  = dir;
 
         item.addEventListener('click', function (event) {
             event.stopPropagation();
@@ -180,13 +200,41 @@ async function loadArticleList(dir, articleList) {
             document.querySelectorAll('.article-item').forEach(function (el) {
                 el.classList.remove('selected');
             });
+            document.querySelectorAll('.article-config-item').forEach(function (el) {
+                el.classList.remove('selected');
+            });
 
             item.classList.add('selected');
+
+            console.debug('[article-item:click] slug =>', post.slug);
 
             openPost(dir, post.slug);
         });
 
-        articleList.appendChild(item);
+        // per-article config child link
+        const articleConfig = document.createElement('div');
+        articleConfig.className   = 'article-config-item';
+        articleConfig.textContent = 'config';
+        articleConfig.dataset.slug = post.slug;
+        articleConfig.dataset.dir  = dir;
+
+        articleConfig.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            document.querySelectorAll('.article-config-item').forEach(function (el) {
+                el.classList.remove('selected');
+            });
+
+            articleConfig.classList.add('selected');
+
+            console.debug('[article-config-item:click] slug =>', post.slug);
+
+            openPostConfig(dir, post.slug);
+        });
+
+        group.appendChild(item);
+        group.appendChild(articleConfig);
+        articleList.appendChild(group);
     });
 
     console.trace('[loadArticleList] ends');
@@ -231,20 +279,7 @@ export function buildProjectAccordion(projects, lastActive) {
         articleList.className = 'article-list';
         articleList.dataset.dir = proj.dir;
 
-        // project config nav item
-        const configItem = document.createElement('div');
-
-        configItem.className = 'config-nav-item';
-        configItem.textContent = 'config.json';
-
-        configItem.addEventListener('click', function(event) {
-            event.stopPropagation();
-            openProjectConfig(proj.dir);
-        });
-
-        articleList.appendChild(configItem);
-
-        // load articles async
+        // load articles async (config.json item added inside loadArticleList)
         loadArticleList(proj.dir, articleList);
 
         // ellipsis click — show context menu

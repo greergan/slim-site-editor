@@ -20,11 +20,13 @@ contextBridge.exposeInMainWorld('api', {
     // app config
     getAppConfig:   () => ipcRenderer.invoke('get-app-config'),
     saveAppConfig:  (config) => ipcRenderer.invoke('save-app-config', config),
-    // stubs — replaced when main.js IPC handlers are wired
+    // project config
+    getConfig:      (args) => ipcRenderer.invoke('get-config', args),
+    saveConfig:     (args) => ipcRenderer.invoke('save-config', args),
+    // posts
     listPosts:      (args) => ipcRenderer.invoke('list-posts', args),
     getPost:        (args) => ipcRenderer.invoke('get-post', args),
     savePost:       (args) => ipcRenderer.invoke('save-post', args),
-    getConfig:      () => Promise.resolve({ config: null }),
-    saveConfig:     () => Promise.resolve({ ok: false }),
-    triggerBuild:   () => Promise.resolve({ ok: false }),
+    // build
+    triggerBuild:   () => ipcRenderer.invoke('trigger-build'),
 });
