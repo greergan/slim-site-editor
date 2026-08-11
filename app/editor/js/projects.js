@@ -1,6 +1,6 @@
 'use strict';
 
-import { setStatus } from './editor.js';
+import { setStatus }   from './editor.js';
 import { loadProjects } from './sidebar.js';
 
 // ----------------------------------------------------------

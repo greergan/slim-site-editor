@@ -179,28 +179,6 @@ body {
 .config-nav-item:hover { background: #2a2d2e; }
 .config-nav-item.selected { background: #37373d; color: #fff; }
 
-/* new-project and import input rows inside sidebar */
-.picker-row {
-  display: none;
-  padding: 6px 12px;
-  gap: 6px;
-  flex-direction: column;
-  background: #1e1e1e;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.picker-row.open { display: flex; }
-
-.picker-row input {
-  background: #2d2d2d;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 4px 6px;
-  font-family: inherit;
-  font-size: 12px;
-  width: 100%;
-}
-
 /* picker field row: input + folder button */
 .picker-field {
   display: flex;
@@ -223,12 +201,69 @@ body {
 
 .pick-btn:hover { background: #4a4a4a; }
 
-.picker-row-actions {
+/* ---- add project tab strip ---- */
+#add-project-tabs {
   display: flex;
-  justify-content: flex-end;
+  border-bottom: 1px solid #333;
 }
 
-.picker-row-actions button {
+.ap-tab {
+  flex: 1;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ap-tab:hover { color: #ccc; background: #2a2d2e; }
+
+.ap-tab.active {
+  color: #569cd6;
+  border-bottom-color: #569cd6;
+  background: #252526;
+}
+
+/* ---- add project forms ---- */
+.ap-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.ap-form label {
+  font-size: 10px;
+  color: #888;
+}
+
+.ap-form input {
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #555;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 12px;
+  width: 100%;
+}
+
+.ap-form input[readonly] {
+  color: #666;
+  cursor: default;
+}
+
+.ap-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.ap-form-actions button {
   background: #0e639c;
   color: #fff;
   border: none;
@@ -238,75 +273,7 @@ body {
   cursor: pointer;
 }
 
-.picker-row-actions button:hover { background: #1177bb; }
-
-/* ---- project forms (new / import) ---- */
-.project-form {
-  display: none;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.project-form.visible { display: flex; }
-
-.project-form label {
-  color: #888;
-  font-size: 11px;
-}
-
-.project-form input {
-  width: 100%;
-  background: #1e1e1e;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 6px;
-  font-family: inherit;
-  font-size: 12px;
-}
-
-.project-picker-field {
-  display: flex;
-  gap: 4px;
-}
-
-.project-picker-field input { flex: 1; }
-
-.project-picker-field button {
-  background: #3a3a3a;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 4px 8px;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.project-picker-field button:hover { background: #4a4a4a; }
-
-.project-form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.project-form-actions button {
-  background: #444;
-  color: #d4d4d4;
-  border: none;
-  padding: 5px 12px;
-  font-family: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.project-form-actions button:hover { background: #555; }
-
-.project-form-actions button.primary {
-  background: #0e639c;
-  color: #fff;
-}
-
-.project-form-actions button.primary:hover { background: #1177bb; }
+.ap-form-actions button:hover { background: #1177bb; }
 
 /* ---- main area ---- */
 #main {
@@ -568,77 +535,3 @@ body {
 }
 
 #error-modal-ok:hover { background: #1177bb; }
-
-/* ---- add project tab strip ---- */
-#add-project-tabs {
-  display: flex;
-  border-bottom: 1px solid #333;
-}
-
-.ap-tab {
-  flex: 1;
-  padding: 6px 4px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: #888;
-  font-family: inherit;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.ap-tab:hover { color: #ccc; background: #2a2d2e; }
-
-.ap-tab.active {
-  color: #569cd6;
-  border-bottom-color: #569cd6;
-  background: #252526;
-}
-
-/* ---- add project forms ---- */
-.ap-form {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  background: #1e1e1e;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.ap-form label {
-  font-size: 10px;
-  color: #888;
-}
-
-.ap-form input {
-  background: #2d2d2d;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 4px 6px;
-  font-family: inherit;
-  font-size: 12px;
-  width: 100%;
-}
-
-.ap-form input[readonly] {
-  color: #666;
-  cursor: default;
-}
-
-.ap-form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2px;
-}
-
-.ap-form-actions button {
-  background: #0e639c;
-  color: #fff;
-  border: none;
-  padding: 4px 10px;
-  font-family: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.ap-form-actions button:hover { background: #1177bb; }

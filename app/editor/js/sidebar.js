@@ -1,6 +1,6 @@
 'use strict';
 
-import { setStatus } from './editor.js';
+import { setStatus }        from './editor.js';
 import { openProjectConfig } from './projects.js';
 
 // ----------------------------------------------------------
@@ -114,8 +114,7 @@ export async function loadProjects() {
     const data = await window.api.listProjects();
 
     if (!data.ok) {
-        // showError imported lazily to avoid circular dep — use event
-        window.dispatchEvent(new CustomEvent('app:error', { detail: data.error || 'failed to load projects' }));
+        window.dispatchEvent(new CustomEvent('app:show-error', { detail: data.error || 'failed to load projects' }));
         return;
     }
 
@@ -141,11 +140,6 @@ export function initSidebar() {
     window.toggleSection   = toggleSection;
     window.togglePickerRow = togglePickerRow;
     window.pickDir         = pickDir;
-
-    // wire error event
-    window.addEventListener('app:error', function(e) {
-        window.dispatchEvent(new CustomEvent('app:show-error', { detail: e.detail }));
-    });
 
     loadProjects();
 }

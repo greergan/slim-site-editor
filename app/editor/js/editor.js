@@ -1,9 +1,10 @@
 'use strict';
 
-import { initSidebar }    from './sidebar.js';
-import { initView }       from './editor-view.js';
-import { initSaveBuild }  from './save-build.js';
-import { initAppConfig }  from './app-config.js';
+import { initSidebar }   from './sidebar.js';
+import { initProjects }  from './projects.js';
+import { initView }      from './editor-view.js';
+import { initSaveBuild } from './save-build.js';
+import { initAppConfig } from './app-config.js';
 
 // ----------------------------------------------------------
 // Partial loader
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // init subsystems
     initSidebar();
+    initProjects();
     initView();
     initSaveBuild();
     initAppConfig();
