@@ -248,6 +248,20 @@ async function saveConfig() {
     console.trace('[saveConfig] ends');
 }
 
+
+// ----------------------------------------------------------
+// Open post — stub until post editor is wired (item 5)
+// ----------------------------------------------------------
+export function openPost(dir, slug) {
+    console.trace('[openPost] begins');
+    console.debug('[openPost] dir =>', dir, 'slug =>', slug);
+
+    // TODO: load post and show post-editor view (item 5)
+    setStatus('openPost stub: ' + slug);
+
+    console.trace('[openPost] ends');
+}
+
 // ----------------------------------------------------------
 // Init — expose functions window needs for inline onclick handlers
 // ----------------------------------------------------------

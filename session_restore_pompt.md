@@ -108,3 +108,6 @@ app/
 - do not ask me about what code should change, that is your job
 - I demand a user UI workflow plan
 - Do not offer a coding change plan
+
+## If you give me files and I complain
+- if I complain that something didn't work after you give me updates ask if my disk cache is slow

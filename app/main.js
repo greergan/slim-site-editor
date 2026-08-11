@@ -495,6 +495,62 @@ ipcMain.handle('save-config', async function (event, { dir, config }) {
     }
 });
 
+// -------------------------------------------------------------
+// IPC — list-posts
+// Reads artifacts/articles/ dir, returns slug + title per post
+// Returns { ok, posts } or { ok, error }
+// -------------------------------------------------------------
+ipcMain.handle('list-posts', async function (event, { dir }) {
+    log.trace({func: 'list-posts', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'list-posts', msg: `dir => ${dir}`, file: __filename, line: 0});
+
+    try {
+        if (!dir) {
+            log.debug({func: 'list-posts', msg: 'missing dir', file: __filename, line: 0});
+            log.trace({func: 'list-posts', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dir is required' };
+        }
+
+        const articlesDir = path.join(path.resolve(dir), 'artifacts', 'articles');
+
+        if (!fs.existsSync(articlesDir)) {
+            log.debug({func: 'list-posts', msg: `articles dir not found => ${articlesDir}`, file: __filename, line: 0});
+            log.trace({func: 'list-posts', msg: 'ends', file: __filename, line: 0});
+            return { ok: true, posts: [] };
+        }
+
+        const slugs = fs.readdirSync(articlesDir).filter(function (entry) {
+            return fs.statSync(path.join(articlesDir, entry)).isDirectory();
+        });
+
+        log.debug({func: 'list-posts', msg: `found ${slugs.length} article(s)`, file: __filename, line: 0});
+
+        const posts = slugs.map(function (slug) {
+            const postFile = path.join(articlesDir, slug, 'post.json');
+            let title = slug;
+
+            if (fs.existsSync(postFile)) {
+                try {
+                    const raw  = fs.readFileSync(postFile, 'utf8');
+                    const post = JSON.parse(raw);
+                    title = post.title || slug;
+                } catch (e) {
+                    log.debug({func: 'list-posts', msg: `parse error for ${slug} => ${e.message}`, file: __filename, line: 0});
+                }
+            }
+
+            return { slug, title };
+        });
+
+        log.trace({func: 'list-posts', msg: 'ends', file: __filename, line: 0});
+        return { ok: true, posts };
+    } catch (e) {
+        log.debug({func: 'list-posts', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'list-posts', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', function () {

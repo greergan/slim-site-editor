@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld('api', {
     getAppConfig:   () => ipcRenderer.invoke('get-app-config'),
     saveAppConfig:  (config) => ipcRenderer.invoke('save-app-config', config),
     // stubs — replaced when main.js IPC handlers are wired
-    listPosts:      () => Promise.resolve({ posts: [] }),
+    listPosts:      (args) => ipcRenderer.invoke('list-posts', args),
     getPost:        () => Promise.resolve({ post: null }),
     savePost:       () => Promise.resolve({ ok: false }),
     getConfig:      (args) => ipcRenderer.invoke('get-config', args),

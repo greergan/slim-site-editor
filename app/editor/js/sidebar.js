@@ -1,7 +1,7 @@
 'use strict';
 
 import { setStatus }        from './editor.js';
-import { openProjectConfig } from './projects.js';
+import { openProjectConfig, openPost } from './projects.js';
 
 // ----------------------------------------------------------
 // Reusable context menu node
@@ -149,6 +149,50 @@ function hideContextMenu() {
 }
 
 // ----------------------------------------------------------
+// Load article list into a project's article-list div
+// ----------------------------------------------------------
+async function loadArticleList(dir, articleList) {
+    console.trace('[loadArticleList] begins');
+    console.debug('[loadArticleList] dir =>', dir);
+
+    const data = await window.api.listPosts({ dir });
+
+    if (!data.ok) {
+        console.debug('[loadArticleList] listPosts failed =>', data.error);
+        console.trace('[loadArticleList] ends');
+        return;
+    }
+
+    console.debug('[loadArticleList] posts =>', data.posts.length);
+
+    data.posts.forEach(function (post) {
+        const item = document.createElement('div');
+
+        item.className       = 'article-item';
+        item.textContent     = post.title || post.slug;
+        item.dataset.slug    = post.slug;
+        item.dataset.dir     = dir;
+
+        item.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            // deselect all
+            document.querySelectorAll('.article-item').forEach(function (el) {
+                el.classList.remove('selected');
+            });
+
+            item.classList.add('selected');
+
+            openPost(dir, post.slug);
+        });
+
+        articleList.appendChild(item);
+    });
+
+    console.trace('[loadArticleList] ends');
+}
+
+// ----------------------------------------------------------
 // Build project accordion rows into #projects-section
 // ----------------------------------------------------------
 export function buildProjectAccordion(projects, lastActive) {
@@ -199,6 +243,9 @@ export function buildProjectAccordion(projects, lastActive) {
         });
 
         articleList.appendChild(configItem);
+
+        // load articles async
+        loadArticleList(proj.dir, articleList);
 
         // ellipsis click — show context menu
         const ellipsis = row.querySelectorAll(':scope > span')[1];
