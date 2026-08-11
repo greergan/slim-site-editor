@@ -11,7 +11,7 @@ const path = require('path');
 
 // default app config shape
 const DEFAULT = {
-    devTools:           true,
+    devTools:           false,
     windowWidth:        1400,
     windowHeight:       900,
     defaultProjectDir:  '',
