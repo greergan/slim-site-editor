@@ -15,7 +15,10 @@ const DEFAULT = {
     windowWidth:        1400,
     windowHeight:       900,
     defaultProjectDir:  '',
-    theme:              'dark'
+    theme:              'dark',
+    autoSave:           false,
+    autoSaveDelay:      2000,
+    buildOnSave:        false
 };
 
 // -------------------------------------------------------------

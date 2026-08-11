@@ -86,5 +86,34 @@
   <div id="post-settings-status"></div>
 </div>
 
+<!-- app config form -->
+<div id="app-config-form">
+  <div id="app-config-form-header">App Config</div>
+  <div id="app-config-form-fields">
+    <label>App Data Directory
+      <input id="acfg-userDataPath" type="text" readonly />
+    </label>
+    <label>Developer Tools
+      <input id="acfg-devTools" type="checkbox" onchange="onAppConfigInput()" />
+    </label>
+    <label>Default Project Directory
+      <div class="picker-field">
+        <input id="acfg-defaultProjectDir" type="text" oninput="onAppConfigInput()" />
+        <button class="pick-btn" onclick="pickAppConfigDir()" title="Browse">&#128193;</button>
+      </div>
+    </label>
+    <label>Auto Save
+      <input id="acfg-autoSave" type="checkbox" onchange="onAppConfigInput()" />
+    </label>
+    <label>Auto Save Delay (ms)
+      <input id="acfg-autoSaveDelay" type="number" min="500" step="100" oninput="onAppConfigInput()" />
+    </label>
+    <label>Build on Save
+      <input id="acfg-buildOnSave" type="checkbox" onchange="onAppConfigInput()" />
+    </label>
+  </div>
+  <div id="app-config-form-status"></div>
+</div>
+
 <!-- raw / config editor (shown instead of work-area for config files) -->
 <textarea id="raw-editor" placeholder=""></textarea>

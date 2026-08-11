@@ -380,18 +380,19 @@ ipcMain.handle('archive-project', async function (event, { dir }) {
 
 // -------------------------------------------------------------
 // IPC — get-app-config
-// Returns current app config: { ok, config }
+// Returns current app config: { ok, config, userDataPath }
 // -------------------------------------------------------------
 ipcMain.handle('get-app-config', async function (event) {
     log.trace({func: 'get-app-config', msg: 'begins', file: __filename, line: 0});
 
     try {
-        const config = appConfig.load(app.getPath('userData'));
+        const userDataPath = app.getPath('userData');
+        const config       = appConfig.load(userDataPath);
 
         log.debug({func: 'get-app-config', msg: 'config loaded', file: __filename, line: 0});
         log.trace({func: 'get-app-config', msg: 'ends', file: __filename, line: 0});
 
-        return { ok: true, config };
+        return { ok: true, config, userDataPath };
     } catch (e) {
         log.debug({func: 'get-app-config', msg: `error => ${e.message}`, file: __filename, line: 0});
         log.trace({func: 'get-app-config', msg: 'ends', file: __filename, line: 0});

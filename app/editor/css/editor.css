@@ -576,6 +576,89 @@ body {
   min-height: 18px;
 }
 
+/* ---- app config form ---- */
+#app-config-form {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+#app-config-form.visible {
+  display: flex;
+}
+
+#app-config-form-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+}
+
+#app-config-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#app-config-form-fields label {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: #888;
+  gap: 4px;
+}
+
+#app-config-form-fields input[type="text"],
+#app-config-form-fields input[type="number"] {
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  width: 100%;
+  max-width: 480px;
+  outline: none;
+}
+
+#app-config-form-fields input[type="text"]:focus,
+#app-config-form-fields input[type="number"]:focus {
+  border-color: #569cd6;
+}
+
+#app-config-form-fields input[readonly] {
+  color: #666;
+  cursor: default;
+}
+
+#app-config-form-fields input[type="checkbox"] {
+  margin-top: 4px;
+}
+
+#app-config-form-fields .picker-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 480px;
+}
+
+#app-config-form-fields .picker-field input {
+  flex: 1;
+  max-width: none;
+}
+
+#app-config-form-status {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #888;
+  min-height: 18px;
+}
+
 /* ---- error modal ---- */
 #error-modal-overlay {
   display: none;

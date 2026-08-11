@@ -19,6 +19,7 @@ export function showView(name) {
     const rawEditor        = document.getElementById('raw-editor');
     const configForm       = document.getElementById('config-form');
     const postSettingsForm = document.getElementById('post-settings-form');
+    const appConfigForm    = document.getElementById('app-config-form');
 
     // hide all views first
     emptyState.classList.remove('visible');
@@ -27,6 +28,7 @@ export function showView(name) {
     rawEditor.classList.remove('visible');
     configForm.classList.remove('visible');
     postSettingsForm.classList.remove('visible');
+    appConfigForm.classList.remove('visible');
 
     if (name === 'welcome') {
         emptyState.classList.add('visible');
@@ -41,6 +43,9 @@ export function showView(name) {
     } else if (name === 'post-settings') {
         postSettingsForm.classList.add('visible');
         console.debug('[showView] showing post-settings');
+    } else if (name === 'app-config') {
+        appConfigForm.classList.add('visible');
+        console.debug('[showView] showing app-config');
     } else {
         console.debug('[showView] unknown view name — falling back to welcome');
         emptyState.classList.add('visible');

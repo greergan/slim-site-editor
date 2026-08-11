@@ -102,8 +102,17 @@ app/
 - I demand a user UI workflow plan
 - Do not offer a coding change plan
 
-## If you give me files and I complain
-- if I complain that something didn't work after you give me updates ask if my disk cache is slow
-
 
 ## Agreed next steps (not yet built, one at a time)
+### UI Workflow
+- Click "App Config" in sidebar → App Config form opens in main area
+- Form shows all 5 fields with appropriate controls
+- Changes auto-save debounced to userData via save-app-config IPC
+- Status line shows "saved" confirmation
+- Fields & Controls
+- Field	Control
+- devTools	checkbox
+- defaultProjectDir	text input + folder picker button
+- autoSave	checkbox
+- autoSaveDelay	number input (ms)
+- buildOnSave	checkbox
