@@ -19,19 +19,19 @@ export async function openAppConfig() {
         console.debug('[openAppConfig] getAppConfig result =>', res);
 
         if (!res.ok) {
-            setStatus('Error loading app config: ' + (res.error || 'unknown'));
+            setStatus('Error loading app config: ' + (res.error || 'unknown'), 'error');
             console.trace('[openAppConfig] ends — load error');
             return;
         }
 
         _populateForm(res.config, res.userDataPath);
         showView('app-config');
-        setStatus('');
+        setStatus('', 'idle');
 
         console.trace('[openAppConfig] ends');
     } catch (e) {
         console.error('[openAppConfig] exception =>', e);
-        setStatus('Error loading app config: ' + e.message);
+        setStatus('Error loading app config: ' + e.message, 'error');
         console.trace('[openAppConfig] ends — exception');
     }
 }
@@ -75,20 +75,12 @@ function _collectForm() {
 }
 
 // ----------------------------------------------------------
-// _setFormStatus — updates status line inside app-config form
-// ----------------------------------------------------------
-function _setFormStatus(msg) {
-    const el = document.getElementById('app-config-form-status');
-    if (el) el.textContent = msg;
-}
-
-// ----------------------------------------------------------
 // onAppConfigInput — debounced save triggered by field changes
 // ----------------------------------------------------------
 export function onAppConfigInput() {
     console.trace('[onAppConfigInput] begins');
 
-    _setFormStatus('');
+    setStatus('', 'idle');
 
     if (_saveTimer) {
         clearTimeout(_saveTimer);
@@ -105,16 +97,16 @@ export function onAppConfigInput() {
             console.debug('[onAppConfigInput] saveAppConfig result =>', res);
 
             if (!res.ok) {
-                _setFormStatus('Save failed: ' + (res.error || 'unknown'));
+                setStatus('Save failed: ' + (res.error || 'unknown'), 'error');
                 console.trace('[onAppConfigInput] ends — save error');
                 return;
             }
 
-            _setFormStatus('saved');
+            setStatus('Saved', 'success');
             console.trace('[onAppConfigInput] ends — saved');
         } catch (e) {
             console.error('[onAppConfigInput] exception =>', e);
-            _setFormStatus('Save error: ' + e.message);
+            setStatus('Save error: ' + e.message, 'error');
             console.trace('[onAppConfigInput] ends — exception');
         }
     }, 800);
@@ -140,6 +132,7 @@ export async function pickAppConfigDir() {
         console.trace('[pickAppConfigDir] ends');
     } catch (e) {
         console.error('[pickAppConfigDir] exception =>', e);
+        setStatus('Error picking directory: ' + e.message, 'error');
         console.trace('[pickAppConfigDir] ends — exception');
     }
 }

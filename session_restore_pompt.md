@@ -102,7 +102,29 @@ app/
 - I demand a user UI workflow plan
 - Do not offer a coding change plan
 
+## App design features
+**For future status updates in other parts of the app:**
+
+Any file that needs to show a status message in the topbar just needs to:
+
+1. Import `setStatus` from `editor.js`
+2. Call it with a message and state
+
+When you want status wired up somewhere new, tell me:
+
+> *"Wire status into `<filename>` — use [success/error/info/warning/idle] for [describe the condition]"*
+
+States and when to use them:
+
+| State | Use for |
+|---|---|
+| `'idle'` | Clear/blank the bar |
+| `'info'` | Neutral in-progress messages |
+| `'success'` | Completed OK — auto-clears 3s |
+| `'error'` | Failure — stays until next action |
+| `'warning'` | Non-fatal alert — stays until next action |
 
 ## Agreed next steps (not yet built, one at a time)
 ### UI Workflow
 - The UI/UX experience should follow industry standards
+
