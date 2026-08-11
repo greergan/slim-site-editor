@@ -18,7 +18,8 @@ const DEFAULT = {
     theme:              'dark',
     autoSave:           false,
     autoSaveDelay:      2000,
-    buildOnSave:        false
+    buildOnSave:        false,
+    previewPort:        3333
 };
 
 // -------------------------------------------------------------

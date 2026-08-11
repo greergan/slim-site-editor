@@ -29,4 +29,6 @@ contextBridge.exposeInMainWorld('api', {
     savePost:       (args) => ipcRenderer.invoke('save-post', args),
     // build
     triggerBuild:   () => ipcRenderer.invoke('trigger-build'),
+    // preview server
+    getPreviewUrl:  () => ipcRenderer.invoke('get-preview-url'),
 });

@@ -9,10 +9,19 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path      = require('path');
 const fs        = require('fs');
+const http      = require('http');
 const registry  = require('./registry');
 const appConfig = require('./app-config');
 //const log = require('./src/log');
 const log = console;
+
+// -------------------------------------------------------------
+// Preview server state
+// Single server instance restarted on active project change
+// -------------------------------------------------------------
+let previewServer     = null;
+let previewPort       = 3333;
+let previewDistDir    = null;
 
 if (process.env.NODE_ENV === 'development') {
     require('electron-reload')(__dirname, {
@@ -26,8 +35,210 @@ if (process.env.NODE_ENV === 'development') {
 // -------------------------------------------------------------
 const SCAFFOLD_DIR = path.join(__dirname, 'scaffold');
 
+// -------------------------------------------------------------
+// MIME type map — used by preview server file handler
+// -------------------------------------------------------------
+const MIME_TYPES = {
+    '.html': 'text/html',
+    '.css':  'text/css',
+    '.js':   'application/javascript',
+    '.json': 'application/json',
+    '.png':  'image/png',
+    '.jpg':  'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif':  'image/gif',
+    '.svg':  'image/svg+xml',
+    '.ico':  'image/x-icon'
+};
+
+// -------------------------------------------------------------
+// ensurePlaceholder — writes a minimal index.html into dist/
+// Called when dist/ is empty so preview server always has content
+// Never touches artifacts/ or any non-dist path
+// -------------------------------------------------------------
+function ensurePlaceholder(distDir) {
+    log.trace({func: 'ensurePlaceholder', msg: 'begins', file: __filename, line: 0});
+
+    const entries = fs.readdirSync(distDir);
+    log.debug({func: 'ensurePlaceholder', msg: `dist entry count => ${entries.length}`, file: __filename, line: 0});
+
+    if (entries.length === 0) {
+        const placeholder = [
+            '<!DOCTYPE html>',
+            '<html lang="en">',
+            '<head>',
+            '  <meta charset="UTF-8">',
+            '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            '  <title>No Build Yet</title>',
+            '  <style>',
+            '    body { font-family: sans-serif; display: flex; align-items: center;',
+            '           justify-content: center; height: 100vh; margin: 0; background: #111; color: #aaa; }',
+            '    p { font-size: 1.2rem; }',
+            '  </style>',
+            '</head>',
+            '<body><p>No build yet — trigger a build to preview your site.</p></body>',
+            '</html>'
+        ].join('\n');
+
+        const indexPath = path.join(distDir, 'index.html');
+        fs.writeFileSync(indexPath, placeholder, 'utf8');
+        log.debug({func: 'ensurePlaceholder', msg: `placeholder written => ${indexPath}`, file: __filename, line: 0});
+    }
+
+    log.trace({func: 'ensurePlaceholder', msg: 'ends', file: __filename, line: 0});
+}
+
+// -------------------------------------------------------------
+// serveFile — resolves and serves a single file from distDir
+// Handles directory requests by appending /index.html
+// Responds 404 if file not found
+// -------------------------------------------------------------
+function serveFile(distDir, reqUrl, res) {
+    log.trace({func: 'serveFile', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'serveFile', msg: `reqUrl => ${reqUrl}`, file: __filename, line: 0});
+
+    // strip query string
+    let urlPath = reqUrl.split('?')[0];
+
+    // default to index.html for directory requests
+    if (urlPath.endsWith('/')) urlPath += 'index.html';
+
+    const absPath = path.join(distDir, urlPath);
+
+    // security: ensure resolved path stays inside distDir
+    if (!absPath.startsWith(path.resolve(distDir))) {
+        log.debug({func: 'serveFile', msg: `path traversal blocked => ${absPath}`, file: __filename, line: 0});
+        res.writeHead(403);
+        res.end('Forbidden');
+        log.trace({func: 'serveFile', msg: 'ends', file: __filename, line: 0});
+        return;
+    }
+
+    if (!fs.existsSync(absPath)) {
+        log.debug({func: 'serveFile', msg: `not found => ${absPath}`, file: __filename, line: 0});
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not found');
+        log.trace({func: 'serveFile', msg: 'ends', file: __filename, line: 0});
+        return;
+    }
+
+    // if path is a directory, serve its index.html
+    const stat = fs.statSync(absPath);
+    if (stat.isDirectory()) {
+        const indexPath = path.join(absPath, 'index.html');
+        if (fs.existsSync(indexPath)) {
+            const content = fs.readFileSync(indexPath);
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(content);
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Not found');
+        }
+        log.trace({func: 'serveFile', msg: 'ends', file: __filename, line: 0});
+        return;
+    }
+
+    const ext      = path.extname(absPath).toLowerCase();
+    const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
+    const content  = fs.readFileSync(absPath);
+
+    log.debug({func: 'serveFile', msg: `serving => ${absPath} as ${mimeType}`, file: __filename, line: 0});
+
+    res.writeHead(200, { 'Content-Type': mimeType });
+    res.end(content);
+
+    log.trace({func: 'serveFile', msg: 'ends', file: __filename, line: 0});
+}
+
+// -------------------------------------------------------------
+// stopPreviewServer — gracefully closes the running preview server
+// Safe to call when no server is running
+// -------------------------------------------------------------
+function stopPreviewServer() {
+    log.trace({func: 'stopPreviewServer', msg: 'begins', file: __filename, line: 0});
+
+    if (previewServer) {
+        previewServer.close(function () {
+            log.debug({func: 'stopPreviewServer', msg: 'server closed', file: __filename, line: 0});
+        });
+        previewServer = null;
+        log.debug({func: 'stopPreviewServer', msg: 'previewServer cleared', file: __filename, line: 0});
+    } else {
+        log.debug({func: 'stopPreviewServer', msg: 'no server running', file: __filename, line: 0});
+    }
+
+    log.trace({func: 'stopPreviewServer', msg: 'ends', file: __filename, line: 0});
+}
+
+// -------------------------------------------------------------
+// startPreviewServer — starts HTTP server serving distDir
+// Stops any existing server first
+// Writes placeholder if dist/ is empty
+// Returns { ok, url } or { ok, error }
+// -------------------------------------------------------------
+function startPreviewServer(distDir) {
+    log.trace({func: 'startPreviewServer', msg: 'begins', file: __filename, line: 0});
+    log.debug({func: 'startPreviewServer', msg: `distDir => ${distDir}`, file: __filename, line: 0});
+
+    try {
+        if (!distDir || !fs.existsSync(distDir)) {
+            log.debug({func: 'startPreviewServer', msg: `distDir missing or not found => ${distDir}`, file: __filename, line: 0});
+            log.trace({func: 'startPreviewServer', msg: 'ends', file: __filename, line: 0});
+            return { ok: false, error: 'dist directory not found: ' + distDir };
+        }
+
+        stopPreviewServer();
+
+        ensurePlaceholder(distDir);
+
+        previewDistDir = distDir;
+
+        previewServer = http.createServer(function (req, res) {
+            serveFile(distDir, req.url, res);
+        });
+
+        previewServer.listen(previewPort, '127.0.0.1', function () {
+            log.debug({func: 'startPreviewServer', msg: `listening on port => ${previewPort}`, file: __filename, line: 0});
+        });
+
+        previewServer.on('error', function (err) {
+            log.debug({func: 'startPreviewServer', msg: `server error => ${err.message}`, file: __filename, line: 0});
+            previewServer = null;
+        });
+
+        const url = `http://127.0.0.1:${previewPort}`;
+
+        log.debug({func: 'startPreviewServer', msg: `preview url => ${url}`, file: __filename, line: 0});
+        log.trace({func: 'startPreviewServer', msg: 'ends', file: __filename, line: 0});
+
+        return { ok: true, url };
+    } catch (e) {
+        log.debug({func: 'startPreviewServer', msg: `error => ${e.message}`, file: __filename, line: 0});
+        log.trace({func: 'startPreviewServer', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: e.message };
+    }
+}
+
 function createWindow() {
     const cfg = appConfig.load(app.getPath('userData'));
+
+    // capture port from config so preview server uses correct value
+    previewPort = cfg.previewPort || 3333;
+    log.debug({func: 'createWindow', msg: `previewPort => ${previewPort}`, file: __filename, line: 0});
+
+    // start preview server for last active project on launch
+    const reg = registry.load(app.getPath('userData'));
+    log.debug({func: 'createWindow', msg: `lastActive => ${reg.lastActive}`, file: __filename, line: 0});
+
+    if (reg.lastActive) {
+        const launchDistDir = path.join(path.resolve(reg.lastActive), 'dist');
+        const launchResult  = startPreviewServer(launchDistDir);
+        if (!launchResult.ok) {
+            log.debug({func: 'createWindow', msg: `preview server failed => ${launchResult.error}`, file: __filename, line: 0});
+        } else {
+            log.debug({func: 'createWindow', msg: `preview server started => ${launchResult.url}`, file: __filename, line: 0});
+        }
+    }
 
     const win = new BrowserWindow({
         width:  cfg.windowWidth,
@@ -311,9 +522,20 @@ ipcMain.handle('set-active-project', async function (event, { dir }) {
         }
 
         log.debug({func: 'set-active-project', msg: 'registry updated', file: __filename, line: 0});
+
+        // start preview server for the newly active project
+        const distDir      = path.join(path.resolve(dir), 'dist');
+        const serverResult = startPreviewServer(distDir);
+        if (!serverResult.ok) {
+            log.debug({func: 'set-active-project', msg: `preview server failed => ${serverResult.error}`, file: __filename, line: 0});
+        } else {
+            log.debug({func: 'set-active-project', msg: `preview server started => ${serverResult.url}`, file: __filename, line: 0});
+        }
+
         log.trace({func: 'set-active-project', msg: 'ends', file: __filename, line: 0});
 
-        return { ok: true };
+        // return url so renderer can populate preview iframe
+        return { ok: true, url: serverResult.url || null };
     } catch (e) {
         log.debug({func: 'set-active-project', msg: `error => ${e.message}`, file: __filename, line: 0});
         log.trace({func: 'set-active-project', msg: 'ends', file: __filename, line: 0});
@@ -624,9 +846,32 @@ ipcMain.handle('save-post', async function (event, { dir, slug, post }) {
     }
 });
 
+// -------------------------------------------------------------
+// IPC — get-preview-url
+// Returns the current preview server URL
+// Returns { ok, url } or { ok, error } if server not running
+// -------------------------------------------------------------
+ipcMain.handle('get-preview-url', async function (event) {
+    log.trace({func: 'get-preview-url', msg: 'begins', file: __filename, line: 0});
+
+    if (!previewServer) {
+        log.debug({func: 'get-preview-url', msg: 'no preview server running', file: __filename, line: 0});
+        log.trace({func: 'get-preview-url', msg: 'ends', file: __filename, line: 0});
+        return { ok: false, error: 'preview server not running' };
+    }
+
+    const url = `http://127.0.0.1:${previewPort}`;
+
+    log.debug({func: 'get-preview-url', msg: `url => ${url}`, file: __filename, line: 0});
+    log.trace({func: 'get-preview-url', msg: 'ends', file: __filename, line: 0});
+
+    return { ok: true, url };
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', function () {
+    stopPreviewServer();
     if (process.platform !== 'darwin') app.quit();
 });
 

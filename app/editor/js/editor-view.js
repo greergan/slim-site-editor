@@ -20,6 +20,7 @@ export function showView(name) {
     const configForm       = document.getElementById('config-form');
     const postSettingsForm = document.getElementById('post-settings-form');
     const appConfigForm    = document.getElementById('app-config-form');
+    const sitePreviewPane  = document.getElementById('site-preview-pane');
 
     // hide all views first
     emptyState.classList.remove('visible');
@@ -29,10 +30,14 @@ export function showView(name) {
     configForm.classList.remove('visible');
     postSettingsForm.classList.remove('visible');
     appConfigForm.classList.remove('visible');
+    if (sitePreviewPane) sitePreviewPane.classList.remove('visible');
 
     if (name === 'welcome') {
         emptyState.classList.add('visible');
         console.debug('[showView] showing welcome');
+    } else if (name === 'site-preview') {
+        if (sitePreviewPane) sitePreviewPane.classList.add('visible');
+        console.debug('[showView] showing site-preview');
     } else if (name === 'config-form') {
         configForm.classList.add('visible');
         console.debug('[showView] showing config-form');

@@ -2,7 +2,7 @@
 
 import { initSidebar }   from './sidebar.js';
 import { initProjects }  from './projects.js';
-import { initView }      from './editor-view.js';
+import { initView, showView } from './editor-view.js';
 import { initSaveBuild } from './save-build.js';
 import { initAppConfig } from './app-config.js';
 
@@ -58,4 +58,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     initView();
     initSaveBuild();
     initAppConfig();
+
+    // show site preview if a project was already active at launch
+    const previewResult = await window.api.getPreviewUrl();
+
+    if (previewResult.ok && previewResult.url) {
+        const frame = document.getElementById('site-preview-frame');
+        if (frame) {
+            frame.src = previewResult.url;
+            showView('site-preview');
+            console.debug('[editor:init] site-preview-frame src =>', previewResult.url);
+        }
+    } else {
+        console.debug('[editor:init] no preview server on launch =>', previewResult.error);
+    }
 });

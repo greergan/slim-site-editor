@@ -124,7 +124,16 @@ States and when to use them:
 | `'error'` | Failure — stays until next action |
 | `'warning'` | Non-fatal alert — stays until next action |
 
+## Remember
+
+
 ## Agreed next steps (not yet built, one at a time)
 ### UI Workflow
 - The UI/UX experience should follow industry standards
+
+
+## Next Task app updates
+
+### Clearly design edit articles functions
+
 

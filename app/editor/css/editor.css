@@ -294,6 +294,26 @@ body {
   overflow: hidden;
 }
 
+/* ---- site preview pane — full main area iframe ---- */
+#site-preview-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#site-preview-pane.visible {
+  display: flex;
+}
+
+#site-preview-frame {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
 /* empty state */
 #empty-state {
   flex: 1;

@@ -2,6 +2,7 @@
 
 import { setStatus }        from './editor.js';
 import { openProjectConfig, openPost, openPostConfig } from './projects.js';
+import { showView }         from './editor-view.js';
 
 // ----------------------------------------------------------
 // Reusable context menu node
@@ -296,7 +297,27 @@ export function buildProjectAccordion(projects, lastActive) {
 
             articleList.classList.toggle('open', isOpen);
 
-            window.api.setActive({ dir: proj.dir });
+            window.api.setActive({ dir: proj.dir }).then(function(result) {
+                console.debug('[project-row:click] setActive result =>', result);
+
+                const frame = document.getElementById('site-preview-frame');
+
+                if (!frame) {
+                    console.debug('[project-row:click] site-preview-frame not found — skipping');
+                    return;
+                }
+
+                if (!result.ok || !result.url) {
+                    console.debug('[project-row:click] preview server not available =>', result.error);
+                    setStatus('preview server failed', 'error');
+                    return;
+                }
+
+                frame.src = result.url;
+                showView('site-preview');
+                console.debug('[project-row:click] site-preview-frame src =>', result.url);
+                setStatus(proj.name, 'info');
+            });
         });
 
         section.appendChild(row);
