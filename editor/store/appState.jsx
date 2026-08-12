@@ -10,6 +10,7 @@ const initialState = {
     currentView:      'welcome',
     statusMsg:        { msg: '', state: 'idle' },
     sidebarCollapsed: false,
+    previewUrl:       null,
 };
 
 // ----------------------------------------------------------
@@ -20,6 +21,7 @@ export const Actions = {
     SET_VIEW:           'SET_VIEW',
     SET_STATUS:         'SET_STATUS',
     TOGGLE_SIDEBAR:     'TOGGLE_SIDEBAR',
+    SET_PREVIEW_URL:    'SET_PREVIEW_URL',
 };
 
 // ----------------------------------------------------------
@@ -46,6 +48,10 @@ function reducer(state, action) {
 
         case Actions.TOGGLE_SIDEBAR:
             next = { ...state, sidebarCollapsed: !state.sidebarCollapsed };
+            break;
+
+        case Actions.SET_PREVIEW_URL:
+            next = { ...state, previewUrl: action.payload };
             break;
 
         default:

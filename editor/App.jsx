@@ -1,14 +1,15 @@
 'use strict';
 
-import React           from 'react';
+import React, { useEffect }  from 'react';
 import { useAppState, Actions } from './store/appState.jsx';
+import { loadInitialPreview }   from './hooks/usePreview.js';
 import Topbar          from './components/Topbar.jsx';
 import Sidebar         from './components/Sidebar.jsx';
 import AppConfig       from './components/views/AppConfig.jsx';
+import SitePreview     from './components/views/SitePreview.jsx';
 
 // ----------------------------------------------------------
 // App — top level layout
-// Main is placeholder until Phase 4
 // ----------------------------------------------------------
 export default function App() {
     console.trace('[App] begins');
@@ -18,6 +19,17 @@ export default function App() {
     console.debug('[App] currentView =>', state.currentView);
     console.debug('[App] activeProject =>', state.activeProject);
     console.debug('[App] sidebarCollapsed =>', state.sidebarCollapsed);
+    console.debug('[App] previewUrl =>', state.previewUrl);
+
+    // ----------------------------------------------------------
+    // On mount — check if preview server already running
+    // (main process starts it for lastActive on launch)
+    // ----------------------------------------------------------
+    useEffect(function () {
+        console.trace('[App:useEffect:loadInitialPreview] begins');
+        loadInitialPreview(dispatch);
+        console.trace('[App:useEffect:loadInitialPreview] ends');
+    }, []);
 
     // ----------------------------------------------------------
     // Sidebar navigation handlers — passed down to Sidebar
@@ -71,10 +83,14 @@ export default function App() {
                     activeConfigSlug={null}
                 />
 
-                {/* Main — placeholder until Phase 4 */}
+                {/* Main */}
                 <div id="main">
+                    {/* SitePreview stays mounted — hidden/shown via CSS */}
+                    <SitePreview />
+
                     {state.currentView === 'app-config' && <AppConfig />}
-                    {state.currentView !== 'app-config' && (
+
+                    {state.currentView !== 'app-config' && state.currentView !== 'site-preview' && (
                         <div id="empty-state" className="visible">
                             open or create a project to get started
                         </div>

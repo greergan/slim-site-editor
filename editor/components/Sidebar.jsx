@@ -46,11 +46,20 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
 
         if (!result.ok) {
             console.debug('[Sidebar:handleActivate] activateProject failed =>', result.error);
+            setStatus(dispatch, 'Preview server failed', 'error');
             console.trace('[Sidebar:handleActivate] ends — error');
             return;
         }
 
+        if (!result.url) {
+            console.debug('[Sidebar:handleActivate] no url returned =>', result);
+            setStatus(dispatch, 'Preview server failed', 'error');
+            console.trace('[Sidebar:handleActivate] ends — no url');
+            return;
+        }
+
         dispatch({ type: Actions.SET_ACTIVE_PROJECT, payload: dir });
+        dispatch({ type: Actions.SET_PREVIEW_URL,    payload: result.url });
         dispatch({ type: Actions.SET_VIEW,           payload: 'site-preview' });
 
         console.debug('[Sidebar:handleActivate] preview url =>', result.url);
