@@ -1,7 +1,8 @@
 # slim-site-editor — React Refactor Session Prompt
 
 ## Purpose
-Copy-paste at the start of each session to restore context.
+Port old vanilla JS to React
+Be sure to ask for old code during the process so that I get what I want
 
 ---
 
@@ -71,7 +72,7 @@ Note: `index.html` and `vite.config.mjs` remain at project root — do not move 
 
 ## Shared State (store/appState.jsx) — DONE
 - `activeProject` — active project dir path
-- `currentView` — `welcome | site-preview | post-editor | config-form | post-settings | app-config`
+- `currentView` — `welcome | add-project | site-preview | post-editor | config-form | post-settings | app-config`
 - `statusMsg` — `{ msg, state }`
 - Exports: `AppStateProvider`, `useAppState`, `setStatus`, `Actions`
 
@@ -94,7 +95,8 @@ Note: `index.html` and `vite.config.mjs` remain at project root — do not move 
 ### Topbar center — breadcrumb + status
 - Center of topbar shows breadcrumb of current context when `idle`
 - Breadcrumb format examples:
-  - nothing open → _(blank)_
+  - nothing open → `Select or create a project`
+  - add project open → `Add Project`
   - project config → `my-blog › Site Config`
   - post open → `my-blog › my-first-post`
   - post settings → `my-blog › my-first-post › Settings`
@@ -150,15 +152,76 @@ console.trace('[functionName] ends');
 
 ---
 
-### Phase 3 — Sidebar
-- [ ] `hooks/useProjects.js`
-- [ ] `components/sidebar/ProjectList.jsx`
-- [ ] `components/sidebar/ProjectRow.jsx`
-- [ ] `components/sidebar/ArticleList.jsx`
-- [ ] `components/sidebar/AddProject.jsx`
-- [ ] `components/Sidebar.jsx`
+### Phase 3 — Sidebar UI/UX Workflow
 
-**Gate:** Projects load, accordion opens, context menu works, add project works.
+The sidebar is always visible on the left side of the app unless collapsed via the hamburger in the topbar.
+
+Three sections in this order:
+
+**App Config:**
+- A single row labeled "App Config" at the top. Clicking it opens the app config form in the main area.
+
+**Add Project:**
+- A collapsible header labeled "Add Project". Clicking it expands a tabbed form below it.
+- Three tabs: New, Import, Remote.
+- New tab: user picks a parent directory, enters a project name, clicks Create. On success the section collapses and the new project appears in the Projects list expanded.
+- Import tab: user picks an existing project directory, clicks Import. On success same as above.
+- Remote tab: repo URL and local destination fields — stub, not yet wired.
+- Section starts collapsed.
+
+**Projects:**
+- A collapsible header labeled "Projects". Clicking it collapses or expands the list. Starts expanded.
+- Each project is a row with its name and a `⋯` button on the right.
+- Clicking a project row expands it and sets it as the active project. The site preview loads in the main area. The active project row is highlighted in blue.
+- Under each expanded project, the first child is "Site Settings" — clicking it opens the project config form.
+- Below Site Settings, each article appears as an indented row. Clicking it opens the post editor.
+- Under each article row is a "Settings" child link. Clicking it opens the post settings form for that article.
+- The `⋯` button opens a context menu with Delete (with confirmation) and Archive options.
+
+---
+
+### Phase 3 — Testable Steps prompt me for each one before it is checked off
+
+**App Config:**
+- [x] Row renders labeled "App Config" at top of sidebar
+- [x] Clicking it opens app config form in main area
+- [x] Change a value and make sure the results show in the topbar status area
+
+**Add Project section:**
+- [x] Section header renders labeled "Add Project" and starts collapsed
+- [x] Clicking header expands the form
+- [x] Clicking header again collapses the form
+- [x] New tab is active by default
+- [x] Clicking Import tab switches to Import form
+- [x] Clicking Remote tab switches to Remote form
+- [x] New tab: picking a directory fills the parent directory field
+- [x] New tab: directory basename auto-fills the project name field
+- [x] New tab: clicking Create creates the project
+- [x] New tab: on success section collapses and new project appears expanded in Projects list
+- [x] Import tab: picking a directory fills the directory field
+- [x] Import tab: clicking Import imports the project
+- [x] Import tab: on success section collapses and project appears expanded in Projects list
+- [x] Remote tab: renders repo URL and local destination fields — stub only
+
+**Projects section:**
+- [x] Section header renders labeled "Projects" and starts expanded
+- [x] Clicking header collapses the list
+- [x] Clicking header again expands the list
+- [x] Projects load from IPC on mount
+- [x] Each project row shows project name and `⋯` button
+- [x] Active project row is highlighted in blue
+- [ ] Clicking a project row expands it and sets it as active
+- [ ] Site preview loads in main area when project is activated
+- [ ] First child under expanded project is "Site Settings"
+- [ ] Clicking "Site Settings" opens project config form
+- [ ] Articles list under each project loads from IPC
+- [ ] Each article renders as an indented row
+- [ ] Clicking an article opens the post editor
+- [ ] Each article has a "Settings" child link
+- [ ] Clicking "Settings" opens post settings form for that article
+- [ ] `⋯` button opens context menu with Delete and Archive
+- [ ] Delete shows confirmation dialog before deleting
+- [ ] Archive is a stub
 
 ---
 
@@ -202,10 +265,10 @@ console.trace('[functionName] ends');
 ---
 
 ### Phase 9 — App config
-- [ ] `hooks/useAppConfig.js`
-- [ ] `components/views/AppConfig.jsx`
+- [x] `hooks/useAppConfig.js` — handled inline in AppConfig.jsx
+- [x] `components/views/AppConfig.jsx`
 
-**Gate:** App config loads, saves, dir picker works.
+**Gate:** App config loads, saves, dir picker works. ✅
 
 ---
 
@@ -221,6 +284,8 @@ console.trace('[functionName] ends');
 - Always ask to see relevant files before designing
 - Plan before any code — wait for go-ahead
 - One file at a time, full file reissued for download
+- write the all files that need to be updated/deleted/chaged/created then offer the complete list for download as a single transaction
+  - give clearn instructions concerning the file placement
 - No compiling or running tests — code given to developer to compile
 - No refactoring without permission
 - No removing anything without permission
@@ -258,10 +323,5 @@ Before any component design, provide a plain-English user workflow plan that des
 
 ---
 
-## Session Handoff Instructions
-At the end of each session:
-1. Mark completed steps `[x]` in this document
-2. Note the next step to pick up
-3. Ask for a git commit block covering all session changes
-
-**Next step to pick up:** Phase 2 — `components/Topbar.jsx`
+### Phase 3 — Testable Steps prompt me for each one before it is checked off
+- start here
