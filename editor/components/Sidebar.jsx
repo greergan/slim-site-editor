@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { useEffect, useState }    from 'react';
-import { useAppState, Actions }      from '../store/appState.jsx';
+import { useAppState, Actions, setStatus } from '../store/appState.jsx';
 import { useProjects }               from '../hooks/useProjects.js';
 import ProjectList                   from './sidebar/ProjectList.jsx';
 import AddProject                    from './sidebar/AddProject.jsx';
@@ -68,8 +68,12 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
 
         if (!result.ok) {
             console.debug('[Sidebar:handleRemove] failed =>', result.error);
+            setStatus(dispatch, 'Delete failed: ' + (result.error || 'unknown'), 'error');
+            console.trace('[Sidebar:handleRemove] ends — error');
+            return;
         }
 
+        setStatus(dispatch, 'Project deleted', 'success');
         console.trace('[Sidebar:handleRemove] ends');
     }
 
