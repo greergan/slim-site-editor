@@ -210,7 +210,7 @@ Three sections in this order:
 - [x] Projects load from IPC on mount
 - [x] Each project row shows project name and `⋯` button
 - [x] Active project row is highlighted in blue
-- [ ] Clicking a project row expands it and sets it as active
+- [x] Clicking a project row expands it and sets it as active
 - [ ] Site preview loads in main area when project is activated
 - [ ] First child under expanded project is "Site Settings"
 - [ ] Clicking "Site Settings" opens project config form
@@ -233,11 +233,50 @@ Three sections in this order:
 
 ---
 
-### Phase 5 — Site preview
-- [ ] `hooks/usePreview.js`
-- [ ] `components/views/SitePreview.jsx`
+# Phase 5 — Site Preview
 
-**Gate:** Preview loads on project activate.
+## UI/UX Workflow
+
+The site preview is an iframe that fills the entire main area. It shows the user's built site served by the local preview server.
+
+**On app load:**
+- If a project was already active when the app was last closed, the preview server starts automatically and the iframe loads that project's site immediately. The main area shows the site, not the empty state.
+- If no project was active, the main area shows the empty state message.
+
+**When a project is clicked in the sidebar:**
+- The preview server switches to that project's `dist/` folder.
+- The iframe reloads with the new URL.
+- The main area switches to show the preview iframe.
+- The topbar breadcrumb updates to `project-name › Site Preview`.
+
+**When a different view is opened** (App Config, Site Settings, post editor, etc.):
+- The iframe is hidden but the server keeps running.
+- Returning to the project row or navigating back shows the preview again.
+
+**If the preview server fails:**
+- Topbar shows an error status message.
+- Main area does not switch to preview.
+
+---
+
+### Files
+
+- `editor/hooks/usePreview.js` — new
+- `editor/components/views/SitePreview.jsx` — new
+- `editor/App.jsx` — wire preview URL into main area
+
+---
+
+### Testable Steps
+
+- [ ] On app load with no active project — main area shows empty state
+- [ ] On app load with a previously active project — iframe loads site automatically
+- [ ] Clicking a project row switches main area to preview iframe
+- [ ] Topbar breadcrumb shows `project-name › Site Preview`
+- [ ] Preview iframe loads and displays the built site
+- [ ] Clicking a different sidebar item hides the preview without stopping the server
+- [ ] Returning to the project shows the preview again
+- [ ] Preview server failure shows error in topbar
 
 ---
 
