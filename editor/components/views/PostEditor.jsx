@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Quill                                   from 'quill';
-import 'quill/dist/quill.snow.css';
 import { useAppState, setStatus }              from '../../store/appState.jsx';
 import { loadPost, savePost }                  from '../../hooks/usePosts.js';
 

@@ -8,6 +8,8 @@ import { createContext, useContext, useReducer } from 'react';
 const initialState = {
     activeProject:    null,
     activeConfigDir:  null,
+    activePostDir:    null,
+    activePostSlug:   null,
     currentView:      'welcome',
     statusMsg:        { msg: '', state: 'idle' },
     sidebarCollapsed: false,
@@ -20,6 +22,7 @@ const initialState = {
 export const Actions = {
     SET_ACTIVE_PROJECT: 'SET_ACTIVE_PROJECT',
     SET_CONFIG_DIR:     'SET_CONFIG_DIR',
+    SET_POST:           'SET_POST',
     SET_VIEW:           'SET_VIEW',
     SET_STATUS:         'SET_STATUS',
     TOGGLE_SIDEBAR:     'TOGGLE_SIDEBAR',
@@ -42,6 +45,10 @@ function reducer(state, action) {
 
         case Actions.SET_CONFIG_DIR:
             next = { ...state, activeConfigDir: action.payload };
+            break;
+
+        case Actions.SET_POST:
+            next = { ...state, activePostDir: action.payload.dir, activePostSlug: action.payload.slug };
             break;
 
         case Actions.SET_VIEW:
