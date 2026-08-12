@@ -53,6 +53,7 @@ editor/
       PostSettings.jsx
       AppConfig.jsx
       Welcome.jsx
+      SitePreview.jsx
     sidebar/
       ProjectList.jsx
       ProjectRow.jsx
@@ -64,6 +65,7 @@ editor/
     usePosts.js
     useAppConfig.js
     useProjectConfig.js
+    usePreview.js	create
 ```
 
 Note: `index.html` and `vite.config.mjs` remain at project root — do not move them.
@@ -211,7 +213,7 @@ Three sections in this order:
 - [x] Each project row shows project name and `⋯` button
 - [x] Active project row is highlighted in blue
 - [x] Clicking a project row expands it and sets it as active
-- [ ] Site preview loads in main area when project is activated
+- [x] Site preview loads in main area when project is activated
 - [x] First child under expanded project is "Site Settings"
 - [ ] Clicking "Site Settings" opens project config form
 - [x] Articles list under each project loads from IPC
@@ -379,8 +381,6 @@ Before any component design, provide a plain-English user workflow plan that des
 ## Where we left off:
 
 Phase 3 complete except: Clicking "Site Settings" (Phase 6), article click (Phase 7), article Settings click (Phase 8)
-Phase 5 (site preview) is next — plan approved, ready for code design
-Start with usePreview.js then SitePreview.jsx
 
 ### Phase 3 — Testable Steps prompt me for each one before it is checked off
 - start here
