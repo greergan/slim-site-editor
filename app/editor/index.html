@@ -4,34 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Slim site editor</title>
-  <link rel="stylesheet" href="css/editor.css" />
-  <link rel="stylesheet" href="css/quill.snow.css" />
 </head>
 <body>
-
-<!-- topbar -->
-<div id="topbar">
-  <button id="menu-toggle" onclick="toggleSidebar()" title="Toggle sidebar">&#9776;</button>
-  <span id="status"></span>
-</div>
-
-<!-- body row -->
-<div id="body-row">
-  <div id="sidebar"><!-- injected by loader --></div>
-  <div id="main"><!-- injected by loader --></div>
-</div>
-
-<!-- error modal -->
-<div id="error-modal-overlay">
-  <div id="error-modal">
-    <div id="error-modal-title">Error</div>
-    <div id="error-modal-msg"></div>
-    <button id="error-modal-ok" onclick="hideError()">OK</button>
-  </div>
-</div>
-
-<script src="js/quill.js"></script>
-<script type="module" src="js/editor.js"></script>
-
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
