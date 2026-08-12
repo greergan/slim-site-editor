@@ -234,6 +234,22 @@ console.trace('[functionName] ends');
 
 ---
 
+
+## Always ask to see appropriate file(s) before design
+- what you need might already be involved in some way
+- do not design without proper understanding of current app state
+- do not guess at what is available
+- do not ask me about what code should change, that is your job
+- I demand a user UI workflow plan
+- Do not offer a coding change plan
+
+---
+
+## UI/UX Workflow Plan Requirement
+Before any component design, provide a plain-English user workflow plan that describes what the user sees, what they interact with, and what happens as a result. No implementation details. No code references. Describe it as if explaining the feature to a non-technical stakeholder. Cover all states the user can encounter. Wait for approval before proceeding.
+
+---
+
 ## Git Commit Message Rules
 - `feature:` — new functionality (minor bump)
 - `fix:` — bug fix (patch bump)
