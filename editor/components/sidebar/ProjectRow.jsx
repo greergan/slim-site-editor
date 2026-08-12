@@ -10,6 +10,7 @@ export default function ProjectRow({ proj, isActive, isOpen, onActivate, onToggl
     console.trace('[ProjectRow] begins');
 
     const [menuVisible, setMenuVisible] = useState(false);
+    const [menuPos,     setMenuPos]     = useState({ top: 0, left: 0 });
     const menuRef                        = useRef(null);
     const ellipsisRef                    = useRef(null);
 
@@ -44,6 +45,9 @@ export default function ProjectRow({ proj, isActive, isOpen, onActivate, onToggl
     function handleEllipsis(e) {
         console.trace('[ProjectRow:handleEllipsis] begins');
         e.stopPropagation();
+        const rect = ellipsisRef.current.getBoundingClientRect();
+        console.debug('[ProjectRow:handleEllipsis] rect =>', rect);
+        setMenuPos({ top: rect.bottom + 4, left: rect.left });
         setMenuVisible(function (v) { return !v; });
         console.trace('[ProjectRow:handleEllipsis] ends');
     }
@@ -98,15 +102,15 @@ export default function ProjectRow({ proj, isActive, isOpen, onActivate, onToggl
                     <div
                         ref={menuRef}
                         style={{
-                            position:    'absolute',
-                            right:       '8px',
-                            top:         '100%',
-                            zIndex:      9999,
-                            background:  '#1e1e1e',
-                            border:      '1px solid #444',
-                            borderRadius:'4px',
-                            minWidth:    '100px',
-                            boxShadow:   '0 2px 8px rgba(0,0,0,0.5)',
+                            position:     'fixed',
+                            top:          menuPos.top + 'px',
+                            left:         menuPos.left + 'px',
+                            zIndex:       9999,
+                            background:   '#1e1e1e',
+                            border:       '1px solid #444',
+                            borderRadius: '4px',
+                            minWidth:     '100px',
+                            boxShadow:    '0 2px 8px rgba(0,0,0,0.5)',
                         }}
                     >
                         <div
