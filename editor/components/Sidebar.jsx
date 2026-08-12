@@ -10,7 +10,7 @@ import AddProject                    from './sidebar/AddProject.jsx';
 // Sidebar — left panel
 // Sections in order: App Config, Add Project, Projects
 // ----------------------------------------------------------
-export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, onOpenAppConfig, activeSlug, activeConfigSlug }) {
+export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, onOpenAppConfig, reloadProjects, activeSlug, activeConfigSlug }) {
     console.trace('[Sidebar] begins');
 
     const { state, dispatch } = useAppState();
@@ -34,6 +34,18 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
         loadProjects();
         console.trace('[Sidebar:useEffect:loadProjects] ends');
     }, [loadProjects]);
+
+    // ----------------------------------------------------------
+    // Reload projects when parent signals a name change
+    // ----------------------------------------------------------
+    useEffect(function () {
+        console.trace('[Sidebar:useEffect:reloadProjects] begins');
+        if (reloadProjects > 0) {
+            console.debug('[Sidebar:useEffect:reloadProjects] reloading projects =>', reloadProjects);
+            loadProjects();
+        }
+        console.trace('[Sidebar:useEffect:reloadProjects] ends');
+    }, [reloadProjects, loadProjects]);
 
     // ----------------------------------------------------------
     // handleActivate — sets active project in store and starts preview

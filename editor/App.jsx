@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { useEffect }  from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppState, Actions } from './store/appState.jsx';
 import { loadInitialPreview }   from './hooks/usePreview.js';
 import Topbar          from './components/Topbar.jsx';
@@ -18,6 +18,8 @@ export default function App() {
     console.trace('[App] begins');
 
     const { state, dispatch } = useAppState();
+
+    const [reloadProjects, setReloadProjects] = useState(0);
 
     console.debug('[App] currentView =>', state.currentView);
     console.debug('[App] activeProject =>', state.activeProject);
@@ -74,10 +76,8 @@ export default function App() {
     function handleProjectNameChange(dir, name) {
         console.trace('[App:handleProjectNameChange] begins');
         console.debug('[App:handleProjectNameChange] dir =>', dir, 'name =>', name);
-        // ProjectList manages its own project name display via the projects array
-        // The sidebar re-renders when projects reload; name update is reflected on next load
-        // For immediate sidebar label update this would require a projects refresh or
-        // a dedicated callback into ProjectList — deferred to Phase 6 gate review
+        // trigger sidebar reload via prop callback — see onReloadProjects on Sidebar
+        setReloadProjects(function (v) { return v + 1; });
         console.trace('[App:handleProjectNameChange] ends');
     }
 
@@ -120,6 +120,7 @@ export default function App() {
                     onOpenPost={handleOpenPost}
                     onOpenPostConfig={handleOpenPostConfig}
                     onOpenAppConfig={handleOpenAppConfig}
+                    reloadProjects={reloadProjects}
                     activeSlug={null}
                     activeConfigSlug={null}
                 />

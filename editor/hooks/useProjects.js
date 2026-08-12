@@ -34,10 +34,25 @@ export function useProjects() {
                 return { ok: false, error: result.error };
             }
 
-            setProjects(result.projects || []);
+            // enrich each project with siteTitle from config.json
+            const raw = result.projects || [];
+            const enriched = await Promise.all(raw.map(async function (proj) {
+                try {
+                    const cfg = await window.api.getConfig({ dir: proj.dir });
+                    if (cfg.ok && cfg.config.siteTitle) {
+                        console.debug('[useProjects:loadProjects] siteTitle =>', cfg.config.siteTitle, 'for =>', proj.dir);
+                        return { ...proj, name: cfg.config.siteTitle };
+                    }
+                } catch (e) {
+                    console.debug('[useProjects:loadProjects] getConfig failed for =>', proj.dir, e.message);
+                }
+                return proj;
+            }));
+
+            setProjects(enriched);
             setLastActive(result.lastActive || null);
 
-            console.debug('[useProjects:loadProjects] projects =>', result.projects.length);
+            console.debug('[useProjects:loadProjects] projects =>', enriched.length);
             console.trace('[useProjects:loadProjects] ends');
             return { ok: true };
         } catch (e) {
