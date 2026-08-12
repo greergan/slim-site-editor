@@ -12,6 +12,7 @@
     "@vitejs/plugin-react": "^4.3.0",
     "concurrently": "^8.2.0",
     "electron": "^30.0.0",
+    "electron-devtools-installer": "^3.2.0",
     "electron-reload": "^2.0.0-alpha.1",
     "vite": "^5.4.0"
   },

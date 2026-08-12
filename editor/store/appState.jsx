@@ -6,9 +6,10 @@ import { createContext, useContext, useReducer } from 'react';
 // Initial state
 // ----------------------------------------------------------
 const initialState = {
-    activeProject: null,
-    currentView:   'welcome',
-    statusMsg:     { msg: '', state: 'idle' },
+    activeProject:    null,
+    currentView:      'welcome',
+    statusMsg:        { msg: '', state: 'idle' },
+    sidebarCollapsed: false,
 };
 
 // ----------------------------------------------------------
@@ -18,6 +19,7 @@ export const Actions = {
     SET_ACTIVE_PROJECT: 'SET_ACTIVE_PROJECT',
     SET_VIEW:           'SET_VIEW',
     SET_STATUS:         'SET_STATUS',
+    TOGGLE_SIDEBAR:     'TOGGLE_SIDEBAR',
 };
 
 // ----------------------------------------------------------
@@ -40,6 +42,10 @@ function reducer(state, action) {
 
         case Actions.SET_STATUS:
             next = { ...state, statusMsg: action.payload };
+            break;
+
+        case Actions.TOGGLE_SIDEBAR:
+            next = { ...state, sidebarCollapsed: !state.sidebarCollapsed };
             break;
 
         default:
@@ -91,7 +97,7 @@ export function useAppState() {
 
 // ----------------------------------------------------------
 // setStatus helper — call from any component
-// state: 'idle' | 'info' | 'success' | 'error' | 'warning'
+// state: 'idle' | 'success' | 'error' | 'warning'
 // success auto-clears after 3s
 // ----------------------------------------------------------
 export function setStatus(dispatch, msg, state = 'idle') {

@@ -16,6 +16,17 @@ const appConfig = require('./app-config');
 const log = console;
 
 // -------------------------------------------------------------
+// React DevTools — loaded in development only
+// -------------------------------------------------------------
+let installExtension;
+let REACT_DEVELOPER_TOOLS;
+if (process.env.NODE_ENV === 'development') {
+    const devtools      = require('electron-devtools-installer');
+    installExtension    = devtools.default;
+    REACT_DEVELOPER_TOOLS = devtools.REACT_DEVELOPER_TOOLS;
+}
+
+// -------------------------------------------------------------
 // Preview server state
 // Single server instance restarted on active project change
 // -------------------------------------------------------------
@@ -872,7 +883,13 @@ ipcMain.handle('get-preview-url', async function (event) {
     return { ok: true, url };
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(async function () {
+    if (process.env.NODE_ENV === 'development') {
+        await installExtension(REACT_DEVELOPER_TOOLS);
+        log.debug({func: 'whenReady', msg: 'React DevTools installed', file: __filename, line: 0});
+    }
+    createWindow();
+});
 
 app.on('window-all-closed', function () {
     stopPreviewServer();
