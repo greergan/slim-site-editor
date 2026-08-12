@@ -1,21 +1,53 @@
 'use strict';
 
-import React              from 'react';
-import { useAppState }    from './store/appState.jsx';
-import Topbar             from './components/Topbar.jsx';
+import React           from 'react';
+import { useAppState } from './store/appState.jsx';
+import Topbar          from './components/Topbar.jsx';
+import Sidebar         from './components/Sidebar.jsx';
 
 // ----------------------------------------------------------
 // App — top level layout
-// Sidebar, Main are placeholders until their phases
+// Main is placeholder until Phase 4
 // ----------------------------------------------------------
 export default function App() {
     console.trace('[App] begins');
 
-    const { state } = useAppState();
+    const { state, dispatch } = useAppState();
 
     console.debug('[App] currentView =>', state.currentView);
     console.debug('[App] activeProject =>', state.activeProject);
     console.debug('[App] sidebarCollapsed =>', state.sidebarCollapsed);
+
+    // ----------------------------------------------------------
+    // Sidebar navigation handlers — passed down to Sidebar
+    // Phases 6-9 will wire these to real views
+    // ----------------------------------------------------------
+    function handleOpenConfig(dir) {
+        console.trace('[App:handleOpenConfig] begins');
+        console.debug('[App:handleOpenConfig] dir =>', dir);
+        // Phase 6
+        console.trace('[App:handleOpenConfig] ends');
+    }
+
+    function handleOpenPost(dir, slug) {
+        console.trace('[App:handleOpenPost] begins');
+        console.debug('[App:handleOpenPost] dir =>', dir, 'slug =>', slug);
+        // Phase 7
+        console.trace('[App:handleOpenPost] ends');
+    }
+
+    function handleOpenPostConfig(dir, slug) {
+        console.trace('[App:handleOpenPostConfig] begins');
+        console.debug('[App:handleOpenPostConfig] dir =>', dir, 'slug =>', slug);
+        // Phase 8
+        console.trace('[App:handleOpenPostConfig] ends');
+    }
+
+    function handleOpenAppConfig() {
+        console.trace('[App:handleOpenAppConfig] begins');
+        // Phase 9
+        console.trace('[App:handleOpenAppConfig] ends');
+    }
 
     console.trace('[App] ends');
 
@@ -28,12 +60,15 @@ export default function App() {
             {/* Body row */}
             <div id="body-row">
 
-                {/* Sidebar — placeholder until Phase 3 */}
-                <div id="sidebar" className={state.sidebarCollapsed ? 'collapsed' : ''}>
-                    <div style={{ padding: '12px', fontSize: '11px', color: '#555' }}>
-                        sidebar — phase 3
-                    </div>
-                </div>
+                {/* Sidebar — Phase 3 */}
+                <Sidebar
+                    onOpenConfig={handleOpenConfig}
+                    onOpenPost={handleOpenPost}
+                    onOpenPostConfig={handleOpenPostConfig}
+                    onOpenAppConfig={handleOpenAppConfig}
+                    activeSlug={null}
+                    activeConfigSlug={null}
+                />
 
                 {/* Main — placeholder until Phase 4 */}
                 <div id="main">
