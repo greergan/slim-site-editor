@@ -1,212 +1,7 @@
-# slim-site-editor — Session Restore Prompt
-
-I am building an Electron app called `slim-site-editor`. The app is a static site/blog editor. Here is the current state:
-
-## Stack
-Electron, vanilla JS (ES modules), HTML partials loaded into `editor/index.html`.
-
-## File structure
-```
-app/
-  main.js
-  preload.js
-  registry.js
-  app-config.js
-  scaffold/
-    artifacts/
-      assets/
-        style.css
-        theme.js
-      templates/
-        index.html
-        post.html
-        tag.html
-  editor/
-    index.html
-    partials/
-      sidebar.html
-      main.html
-    js/
-      editor.js
-      sidebar.js
-      projects.js
-      editor-view.js
-      save-build.js
-      app-config.js
-    css/
-      editor.css
-```
-
-## Project artifact structure
-```
-<projectDir>/
-  artifacts/
-    config.json
-    assets/
-      style.css
-      theme.js
-    templates/
-      index.html
-      post.html
-      tag.html
-    articles/
-      <slug>/
-        post.json
-  dist/
-```
-
-## artifacts/config.json fields
-`siteTitle`, `sitePrompt`, `siteDesc`, `currentYear`, `siteUrl`, `author`
-
-## post.json fields
-`slug`, `title`, `description`, `date`, `readTime`, `tags`, `pinned`, `pinnedOrder`, `body`
-
-## preload.js — window.api exposes
-`appName`, `pickDirectory`, `listProjects`, `newProject`, `importProject`, `removeProject`, `setActive`, `archiveProject`, `getAppConfig`, `saveAppConfig`, plus stubs for `listPosts`, `getPost`, `savePost`, `getConfig`, `saveConfig`, `triggerBuild`
-
-## Completed features
-- Project list with accordion in sidebar
-- `⋯` context menu on each project row (Delete with confirm, Archive stub)
-- Auto-fill project name from picked directory basename
-- Collapse Add Project section on successful create or import
-- New project scaffold: creates directory structure, copies assets/templates from `app/scaffold/`, writes `config.json` defaults, writes default first article
-- `electron-reload` wired for development auto-reload
-- `Makefile` with `make version` — bumps semver from commit log (`feature:` → minor, `fix:|config:|docs:` → patch), updates `package.json`, commits, tags
-
-## Git commit message rules
-- `feature:` — new functionality (triggers minor version bump)
-- `fix:` — bug fix (triggers patch version bump)
-- `config:` — configuration or build changes (triggers patch version bump)
-- `docs:` — documentation changes (triggers patch version bump)
-- rember what has changed during the session
-- give git comments as a full copy/paste block when asked including all session changes
-
-
-
-## Working rules
-- Workflow plan before any code
-- One transaction at a time
-- full file reissued for download
-- No compiling or running tests — code is given to me to compile
-- No refactoring without permission
-- No removing anything without permission
-- Do not rewrite comments
-- All functions get trace logging at start/end and debug checkpoints
-- Wait for go-ahead before writing code
-
-## Always ask to see appropriate file(s) before design
-- what you need might already be involved in some way
-- do not design without proper understanding of current app state
-- do not guess at what is available
-- do not ask me about what code should change, that is your job
-- I demand a user UI workflow plan
-- Do not offer a coding change plan
-
-## App design features
-**For future status updates in other parts of the app:**
-
-Any file that needs to show a status message in the topbar just needs to:
-
-1. Import `setStatus` from `editor.js`
-2. Call it with a message and state
-
-When you want status wired up somewhere new, tell me:
-
-> *"Wire status into `<filename>` — use [success/error/info/warning/idle] for [describe the condition]"*
-
-States and when to use them:
-
-| State | Use for |
-|---|---|
-| `'idle'` | Clear/blank the bar |
-| `'info'` | Neutral in-progress messages |
-| `'success'` | Completed OK — auto-clears 3s |
-| `'error'` | Failure — stays until next action |
-| `'warning'` | Non-fatal alert — stays until next action |
-
-## Remember
-
-
-## Agreed next steps (not yet built, one at a time)
-### UI Workflow
-- The UI/UX experience should follow industry standards
-
-
-I am refactoring an Electron app called `slim-site-editor` from vanilla JS (ES modules, HTML partials) to React. 
-
-The current stack uses:
-- Electron main process (main.js, preload.js, registry.js, app-config.js)
-- Vanilla JS ES modules in editor/js/
-- HTML partials loaded into editor/index.html
-- No bundler — script tags and native ES modules
-
-The refactor goal:
-- Introduce React for the renderer (editor UI) only
-- Main process files stay unchanged
-- Use Vite as the bundler/dev server for the renderer
-- Use functional components and hooks only
-- No class components
-- Preserve all existing IPC calls via window.api (preload.js unchanged)
-- Preserve all existing CSS structure and variable names where possible
-
-Current renderer file structure:
-editor/
-  index.html
-  partials/
-    sidebar.html
-    main.html
-  js/
-    editor.js
-    sidebar.js
-    projects.js
-    editor-view.js
-    save-build.js
-    app-config.js
-  css/
-    editor.css
-
-Before writing any code, ask to see any files needed to understand current state. Plan each component before building it. One file at a time. Wait for go-ahead before writing code.
-
-
-the target structure
-editor/
-  index.html               ← Vite entry point
-  src/
-    main.jsx               ← React root, mounts <App />
-    App.jsx                ← top level layout: topbar, sidebar, main
-    components/
-      Topbar.jsx
-      Sidebar.jsx
-      Main.jsx             ← view router, renders active view
-      views/
-        SitePreview.jsx    ← site preview iframe
-        PostEditor.jsx     ← Quill editor + save bar
-        ConfigForm.jsx     ← project config.json form
-        PostSettings.jsx   ← per-article settings form
-        AppConfig.jsx      ← app settings form
-        Welcome.jsx        ← empty state
-      sidebar/
-        ProjectList.jsx    ← project accordion
-        ProjectRow.jsx     ← single project row + context menu
-        ArticleList.jsx    ← articles under a project
-        AddProject.jsx     ← new/import/remote tabs
-    hooks/
-      useProjects.js       ← listProjects, setActive, removeProject
-      usePreview.js        ← getPreviewUrl, preview server state
-      usePosts.js          ← listPosts, getPost, savePost
-      useAppConfig.js      ← getAppConfig, saveAppConfig
-      useProjectConfig.js  ← getConfig, saveConfig
-    store/
-      appState.js          ← shared state (active project, current view)
-    css/
-      editor.css
-  vite.config.js
-  
-  
-  # slim-site-editor — React Refactor Session Prompt
+# slim-site-editor — React Refactor Session Prompt
 
 ## Purpose
-Copy-paste this at the start of each new session to restore context and pick up where we left off.
+Copy-paste at the start of each session to restore context.
 
 ---
 
@@ -219,60 +14,97 @@ Copy-paste this at the start of each new session to restore context and pick up 
 
 ---
 
-## File Structure — Target
+## File Structure — Actual Current State
 
 ```
+index.html                 ← Vite entry point (project root)
+vite.config.mjs            ← Vite config (project root)
+app/
+  main.js
+  preload.js
+  registry.js
+  app-config.js
 editor/
-  index.html               ← Vite entry point (DONE)
-  vite.config.js           ← Vite config (DONE)
-  src/
-    main.jsx               ← React root, mounts <App />
-    App.jsx                ← top level layout: topbar, sidebar, main
-    components/
-      Topbar.jsx
-      Sidebar.jsx
-      Main.jsx             ← view router, renders active view
-      views/
-        SitePreview.jsx    ← site preview iframe
-        PostEditor.jsx     ← Quill editor + save bar
-        ConfigForm.jsx     ← project config.json form
-        PostSettings.jsx   ← per-article settings form
-        AppConfig.jsx      ← app settings form
-        Welcome.jsx        ← empty state
-      sidebar/
-        ProjectList.jsx    ← project accordion
-        ProjectRow.jsx     ← single project row + context menu
-        ArticleList.jsx    ← articles under a project
-        AddProject.jsx     ← new/import/remote tabs
-    hooks/
-      useProjects.js
-      usePreview.js
-      usePosts.js
-      useAppConfig.js
-      useProjectConfig.js
-    store/
-      appState.js          ← shared state (activeProject, currentView, statusMsg)
-    css/
-      editor.css
+  App.jsx                  ← top level layout shell (placeholders for Phase 2+)
+  main.jsx                 ← React root, mounts <App /> inside <AppStateProvider>
+  store/
+    appState.jsx           ← context, reducer, useAppState, setStatus
+  css/
+    editor.css
+    quill.snow.css
+    quill.snow.css.map
 ```
 
 ---
 
-## Shared State (appState.js)
-- `activeProject` — currently active project dir path
-- `currentView` — one of: `welcome` | `site-preview` | `post-editor` | `config-form` | `post-settings` | `app-config`
-- `statusMsg` — `{ msg, state }` where state: `idle | info | success | error | warning`
+## Target Structure (remaining work)
+
+```
+editor/
+  components/
+    Topbar.jsx
+    Sidebar.jsx
+    Main.jsx
+    views/
+      SitePreview.jsx
+      PostEditor.jsx
+      ConfigForm.jsx
+      PostSettings.jsx
+      AppConfig.jsx
+      Welcome.jsx
+    sidebar/
+      ProjectList.jsx
+      ProjectRow.jsx
+      ArticleList.jsx
+      AddProject.jsx
+  hooks/
+    useProjects.js
+    usePreview.js
+    usePosts.js
+    useAppConfig.js
+    useProjectConfig.js
+```
+
+Note: `index.html` and `vite.config.mjs` remain at project root — do not move them.
+
+---
+
+## Shared State (store/appState.jsx) — DONE
+- `activeProject` — active project dir path
+- `currentView` — `welcome | site-preview | post-editor | config-form | post-settings | app-config`
+- `statusMsg` — `{ msg, state }`
+- Exports: `AppStateProvider`, `useAppState`, `setStatus`, `Actions`
 
 ---
 
 ## Status States
-| State | Use for |
+`info` is not used — removed.
+
+| State | Display |
 |---|---|
-| `idle` | Clear/blank |
-| `info` | Neutral in-progress |
-| `success` | Completed OK — auto-clears 3s |
-| `error` | Failure — stays until next action |
-| `warning` | Non-fatal alert — stays until next action |
+| `idle` | breadcrumb shown |
+| `success` | message shown — restores breadcrumb after 3s |
+| `error` | message stays — breadcrumb gone until next action |
+| `warning` | message stays — breadcrumb gone until next action |
+
+---
+
+## Design Decisions
+
+### Topbar center — breadcrumb + status
+- Center of topbar shows breadcrumb of current context when `idle`
+- Breadcrumb format examples:
+  - nothing open → _(blank)_
+  - project config → `my-blog › Site Config`
+  - post open → `my-blog › my-first-post`
+  - post settings → `my-blog › my-first-post › Settings`
+  - app config → `App Settings`
+- Status message replaces breadcrumb when state is `success`, `error`, or `warning`
+- `success` restores breadcrumb after 3s
+- `error` and `warning` stay until next action clears them
+
+### Sidebar collapsed state
+- Decided per session — see phase notes for chosen option
 
 ---
 
@@ -302,10 +134,10 @@ console.trace('[functionName] ends');
 ## Incremental Build Plan
 
 ### Phase 1 — Foundation
-- [ ] `store/appState.js`
-- [ ] `src/main.jsx`
-- [ ] `src/App.jsx`
-- [ ] `src/css/editor.css` (copy existing)
+- [x] `store/appState.jsx`
+- [x] `main.jsx`
+- [x] `App.jsx`
+- [x] `css/editor.css`
 
 **Gate:** Vite dev server loads, shell renders, no errors.
 
@@ -395,6 +227,10 @@ console.trace('[functionName] ends');
 - Do not rewrite comments
 - All functions get trace logging at start/end and debug checkpoints
 - Mark completed steps with `[x]` when done
+- Always apply industry standard patterns for state, layout, and component design
+- When multiple implementation options exist, identify the industry standard and recommend it with reasoning
+- Shared state belongs in the store if more than one component reads or writes it
+- Never prop-drill state that is consumed by more than one component level
 
 ---
 
@@ -412,4 +248,4 @@ At the end of each session:
 2. Note the next step to pick up
 3. Ask for a git commit block covering all session changes
 
-**Next step to pick up:** Phase 1 — `store/appState.js`
+**Next step to pick up:** Phase 2 — `components/Topbar.jsx`
