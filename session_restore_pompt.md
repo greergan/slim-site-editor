@@ -15,45 +15,24 @@ Be sure to ask for old code during the process so that I get what I want
 
 ---
 
-## File Structure — Actual Current State
 
+## Current file structure
 ```
-index.html                 ← Vite entry point (project root)
-vite.config.mjs            ← Vite config (project root)
-app/
-  main.js
-  preload.js
-  registry.js
-  app-config.js
 editor/
-  App.jsx                  ← top level layout shell (placeholders for Phase 2+)
-  main.jsx                 ← React root, mounts <App /> inside <AppStateProvider>
+  App.jsx
+  main.jsx
   store/
-    appState.jsx           ← context, reducer, useAppState, setStatus
-  css/
-    editor.css
-    quill.snow.css
-    quill.snow.css.map
-```
-
----
-
-## Target Structure (remaining work)
-
-```
-editor/
+    appState.jsx
   components/
     Topbar.jsx
     Sidebar.jsx
-    Main.jsx
     views/
       SitePreview.jsx
       PostEditor.jsx
-      ConfigForm.jsx
-      PostSettings.jsx
+      SiteConfig.jsx
+      PostConfig.jsx
       AppConfig.jsx
       Welcome.jsx
-      SitePreview.jsx
     sidebar/
       ProjectList.jsx
       ProjectRow.jsx
@@ -65,7 +44,9 @@ editor/
     usePosts.js
     useAppConfig.js
     useProjectConfig.js
-    usePreview.js	create
+  css/
+    editor.css
+    quill.snow.css
 ```
 
 Note: `index.html` and `vite.config.mjs` remain at project root — do not move them.
@@ -224,7 +205,7 @@ Three sections in this order:
 - [x] Each article renders as an indented row
 - [x] Clicking an article opens the post editor
 - [x] Each article has a "Settings" child link
-- [ ] Clicking "Settings" opens post settings form for that article
+- [x] Clicking "Settings" opens post settings form for that article
 - [x] `⋯` button opens context menu with Delete and Archive
 - [x] Delete shows confirmation dialog before deleting
 - [ ] Archive is a stub
@@ -232,8 +213,8 @@ Three sections in this order:
 ---
 
 ### Phase 4 — Main view router
-- [ ] `components/Main.jsx`
-- [ ] `components/views/Welcome.jsx`
+- [x] `components/Main.jsx`
+- [x] `components/views/Welcome.jsx`
 
 **Gate:** Welcome shows on load, switching project shows correct view.
 
@@ -275,35 +256,35 @@ The site preview is an iframe that fills the entire main area. It shows the user
 
 ### Testable Steps
 
-- [ ] On app load with no active project — main area shows empty state
-- [ ] On app load with a previously active project — iframe loads site automatically
-- [ ] Clicking a project row switches main area to preview iframe
-- [ ] Topbar breadcrumb shows `project-name › Site Preview`
-- [ ] Preview iframe loads and displays the built site
-- [ ] Clicking a different sidebar item hides the preview without stopping the server
-- [ ] Returning to the project shows the preview again
-- [ ] Preview server failure shows error in topbar
+- [x] On app load with no active project — main area shows empty state
+- [x] On app load with a previously active project — iframe loads site automatically
+- [x] Clicking a project row switches main area to preview iframe
+- [x] Topbar breadcrumb shows `project-name › Site Preview`
+- [x] Preview iframe loads and displays the built site
+- [x] Clicking a different sidebar item hides the preview without stopping the server
+- [x] Returning to the project shows the preview again
+- [x] Preview server failure shows error in topbar
 
 ---
 
 ### Phase 6 — Project config form
-- [ ] `hooks/useProjectConfig.js`
-- [ ] `components/views/ConfigForm.jsx`
+- [x] `hooks/useProjectConfig.js`
+- [x] `components/views/ConfigForm.jsx`
 
 **Gate:** Config form loads, saves, updates sidebar row name.
 
 ---
 
 ### Phase 7 — Post editor
-- [ ] `hooks/usePosts.js`
-- [ ] `components/views/PostEditor.jsx`
+- [x] `hooks/usePosts.js`
+- [x] `components/views/PostEditor.jsx`
 
 **Gate:** Posts open, edit, save, preview updates.
 
 ---
 
 ### Phase 8 — Post settings
-- [ ] `components/views/PostSettings.jsx`
+- [x] `components/views/PostSettings.jsx`
 
 **Gate:** Settings form loads and saves.
 
@@ -386,7 +367,12 @@ Before any component design, provide a plain-English user workflow plan that des
 
 ## Where we left off:
 
-Phase 3 complete except: article Settings click (Phase 8)
+Phase 7 complete ✅
+Phase 8 — Post settings (PostConfig.jsx) — built but not tested
 
-### Phase 3 — Testable Steps
-- start here
+### Next session start here:
+- Test PostConfig.jsx — click Settings under an article
+- Verify fields load correctly
+- Verify save works and preserves post body
+- Verify breadcrumb shows `project › slug › Settings`
+- Then move to Phase 9 cleanup
