@@ -46,7 +46,7 @@ function buildBreadcrumb(currentView, activeProject, currentPost) {
             crumb = projectName ? `${projectName} › Site Config` : 'Site Config';
             break;
 
-        case 'post-settings':
+        case 'post-config':
             crumb = projectName && currentPost
                 ? `${projectName} › ${currentPost} › Settings`
                 : projectName || '';

@@ -8,6 +8,7 @@ import Sidebar         from './components/Sidebar.jsx';
 import AppConfig       from './components/views/AppConfig.jsx';
 import SiteConfig      from './components/views/SiteConfig.jsx';
 import PostEditor      from './components/views/PostEditor.jsx';
+import PostConfig      from './components/views/PostConfig.jsx';
 import SitePreview     from './components/views/SitePreview.jsx';
 
 // ----------------------------------------------------------
@@ -91,7 +92,8 @@ export default function App() {
     function handleOpenPostConfig(dir, slug) {
         console.trace('[App:handleOpenPostConfig] begins');
         console.debug('[App:handleOpenPostConfig] dir =>', dir, 'slug =>', slug);
-        // Phase 8
+        dispatch({ type: Actions.SET_POST, payload: { dir, slug } });
+        dispatch({ type: Actions.SET_VIEW, payload: 'post-config' });
         console.trace('[App:handleOpenPostConfig] ends');
     }
 
@@ -130,10 +132,12 @@ export default function App() {
                     {state.currentView === 'app-config'   && <AppConfig />}
                     {state.currentView === 'config-form'  && <SiteConfig onProjectNameChange={handleProjectNameChange} />}
                     {state.currentView === 'post-editor'  && <PostEditor />}
+                    {state.currentView === 'post-config'  && <PostConfig />}
 
                     {state.currentView !== 'app-config'  &&
                      state.currentView !== 'config-form' &&
                      state.currentView !== 'post-editor' &&
+                     state.currentView !== 'post-config' &&
                      state.currentView !== 'site-preview' && (
                         <div id="empty-state" className="visible">
                             open or create a project to get started
