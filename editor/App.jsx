@@ -1,9 +1,10 @@
 'use strict';
 
 import React           from 'react';
-import { useAppState } from './store/appState.jsx';
+import { useAppState, Actions } from './store/appState.jsx';
 import Topbar          from './components/Topbar.jsx';
 import Sidebar         from './components/Sidebar.jsx';
+import AppConfig       from './components/views/AppConfig.jsx';
 
 // ----------------------------------------------------------
 // App — top level layout
@@ -45,7 +46,7 @@ export default function App() {
 
     function handleOpenAppConfig() {
         console.trace('[App:handleOpenAppConfig] begins');
-        // Phase 9
+        dispatch({ type: Actions.SET_VIEW, payload: 'app-config' });
         console.trace('[App:handleOpenAppConfig] ends');
     }
 
@@ -72,9 +73,12 @@ export default function App() {
 
                 {/* Main — placeholder until Phase 4 */}
                 <div id="main">
-                    <div id="empty-state" className="visible">
-                        open or create a project to get started
-                    </div>
+                    {state.currentView === 'app-config' && <AppConfig />}
+                    {state.currentView !== 'app-config' && (
+                        <div id="empty-state" className="visible">
+                            open or create a project to get started
+                        </div>
+                    )}
                 </div>
 
             </div>
