@@ -19,6 +19,7 @@ export default function AppConfig() {
     const [devTools,          setDevTools]           = useState(false);
     const [autoSave,          setAutoSave]           = useState(false);
     const [autoSaveDelay,     setAutoSaveDelay]      = useState(2000);
+    const [previewPort,       setPreviewPort]         = useState(3333);
 
     const saveTimerRef = useRef(null);
 
@@ -48,6 +49,7 @@ export default function AppConfig() {
                 setDevTools(!!cfg.devTools);
                 setAutoSave(!!cfg.autoSave);
                 setAutoSaveDelay(cfg.autoSaveDelay ?? 2000);
+                setPreviewPort(cfg.previewPort ?? 3333);
 
                 setStatus(dispatch, '', 'idle');
 
@@ -89,6 +91,7 @@ export default function AppConfig() {
                 autoSave:          overrides.autoSave          !== undefined ? overrides.autoSave          : autoSave,
                 autoSaveDelay:     overrides.autoSaveDelay     !== undefined ? overrides.autoSaveDelay     : autoSaveDelay,
                 buildOnSave:       overrides.buildOnSave       !== undefined ? overrides.buildOnSave       : buildOnSave,
+                previewPort:       overrides.previewPort       !== undefined ? overrides.previewPort       : previewPort,
             };
 
             console.debug('[AppConfig:scheduleSave] config =>', config);
@@ -180,6 +183,14 @@ export default function AppConfig() {
         console.trace('[AppConfig:handleAutoSaveDelay] ends');
     }
 
+    function handlePreviewPort(e) {
+        console.trace('[AppConfig:handlePreviewPort] begins');
+        const val = Number(e.target.value) || 3333;
+        setPreviewPort(val);
+        scheduleSave({ previewPort: val });
+        console.trace('[AppConfig:handlePreviewPort] ends');
+    }
+
     console.trace('[AppConfig] ends');
 
     return (
@@ -218,6 +229,27 @@ export default function AppConfig() {
                                 title="Browse"
                                 onClick={pickDefaultProjectDir}
                             >&#128193;</button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Preview */}
+                <div className="acfg-section">
+                    <div className="acfg-section-label">Preview</div>
+
+                    <div className="acfg-field">
+                        <span className="acfg-label">Preview Server Port</span>
+                        <div className="acfg-input-with-unit">
+                            <input
+                                id="acfg-previewPort"
+                                type="number"
+                                min="1024"
+                                max="65535"
+                                step="1"
+                                value={previewPort}
+                                onChange={handlePreviewPort}
+                            />
+                            <span className="acfg-unit">port</span>
                         </div>
                     </div>
                 </div>

@@ -655,8 +655,22 @@ ipcMain.handle('save-app-config', async function (event, config) {
         }
 
         log.debug({func: 'save-app-config', msg: 'config saved', file: __filename, line: 0});
-        log.trace({func: 'save-app-config', msg: 'ends', file: __filename, line: 0});
 
+        // if previewPort changed, update in-memory value and restart server if active
+        if (config.previewPort && config.previewPort !== previewPort) {
+            log.debug({func: 'save-app-config', msg: `previewPort changed => ${previewPort} -> ${config.previewPort}`, file: __filename, line: 0});
+            previewPort = config.previewPort;
+
+            if (previewDistDir) {
+                log.debug({func: 'save-app-config', msg: `restarting preview server on port => ${previewPort}`, file: __filename, line: 0});
+                const restartResult = startPreviewServer(previewDistDir);
+                log.debug({func: 'save-app-config', msg: `restart result => ${JSON.stringify(restartResult)}`, file: __filename, line: 0});
+            } else {
+                log.debug({func: 'save-app-config', msg: 'no active project — server not restarted', file: __filename, line: 0});
+            }
+        }
+
+        log.trace({func: 'save-app-config', msg: 'ends', file: __filename, line: 0});
         return { ok: true };
     } catch (e) {
         log.debug({func: 'save-app-config', msg: `error => ${e.message}`, file: __filename, line: 0});
