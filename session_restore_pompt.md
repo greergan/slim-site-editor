@@ -74,9 +74,13 @@ Note: `index.html` and `vite.config.mjs` remain at project root — do not move 
 
 ## Shared State (store/appState.jsx) — DONE
 - `activeProject` — active project dir path
+- `activeConfigDir` — dir path of project whose config form is open
+- `activePostDir` — dir path of project whose post is open
+- `activePostSlug` — slug of the post currently open in the editor
 - `currentView` — `welcome | add-project | site-preview | post-editor | config-form | post-settings | app-config`
 - `statusMsg` — `{ msg, state }`
 - Exports: `AppStateProvider`, `useAppState`, `setStatus`, `Actions`
+- Actions: `SET_ACTIVE_PROJECT`, `SET_CONFIG_DIR`, `SET_POST`, `SET_VIEW`, `SET_STATUS`, `TOGGLE_SIDEBAR`, `SET_PREVIEW_URL`
 
 ---
 
@@ -215,10 +219,10 @@ Three sections in this order:
 - [x] Clicking a project row expands it and sets it as active
 - [x] Site preview loads in main area when project is activated
 - [x] First child under expanded project is "Site Settings"
-- [ ] Clicking "Site Settings" opens project config form
+- [x] Clicking "Site Settings" opens project config form
 - [x] Articles list under each project loads from IPC
 - [x] Each article renders as an indented row
-- [ ] Clicking an article opens the post editor
+- [x] Clicking an article opens the post editor
 - [x] Each article has a "Settings" child link
 - [ ] Clicking "Settings" opens post settings form for that article
 - [x] `⋯` button opens context menu with Delete and Archive
@@ -376,11 +380,13 @@ Before any component design, provide a plain-English user workflow plan that des
 - editor/components/views/AppConfig.jsx
 - app/main.js
 - app/preload.js
-
+- editor/components/views/ConfigForm.jsx
+- editor/components/views/PostEditor.jsx
+- editor/hooks/usePosts.js
 
 ## Where we left off:
 
-Phase 3 complete except: Clicking "Site Settings" (Phase 6), article click (Phase 7), article Settings click (Phase 8)
+Phase 3 complete except: article Settings click (Phase 8)
 
-### Phase 3 — Testable Steps prompt me for each one before it is checked off
+### Phase 3 — Testable Steps
 - start here
