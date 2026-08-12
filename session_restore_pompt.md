@@ -144,7 +144,7 @@ console.trace('[functionName] ends');
 ---
 
 ### Phase 2 — Topbar
-- [ ] `components/Topbar.jsx`
+- [x] `components/Topbar.jsx`
 
 **Gate:** Status messages display correctly.
 
