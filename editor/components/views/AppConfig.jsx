@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useAppState, setStatus }              from '../../store/appState.jsx';
+import { useAppState, setStatus, Actions }     from '../../store/appState.jsx';
 
 // ----------------------------------------------------------
 // AppConfig — app settings form
@@ -179,6 +179,8 @@ export default function AppConfig() {
         console.trace('[AppConfig:handleAutoSaveDelay] begins');
         const val = Number(e.target.value) || 2000;
         setAutoSaveDelay(val);
+        dispatch({ type: Actions.SET_AUTO_SAVE_DELAY, payload: val });
+        console.debug('[AppConfig:handleAutoSaveDelay] dispatched autoSaveDelay =>', val);
         scheduleSave({ autoSaveDelay: val });
         console.trace('[AppConfig:handleAutoSaveDelay] ends');
     }

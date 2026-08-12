@@ -14,19 +14,21 @@ const initialState = {
     statusMsg:        { msg: '', state: 'idle' },
     sidebarCollapsed: false,
     previewUrl:       null,
+    autoSaveDelay:    2000,
 };
 
 // ----------------------------------------------------------
 // Actions
 // ----------------------------------------------------------
 export const Actions = {
-    SET_ACTIVE_PROJECT: 'SET_ACTIVE_PROJECT',
-    SET_CONFIG_DIR:     'SET_CONFIG_DIR',
-    SET_POST:           'SET_POST',
-    SET_VIEW:           'SET_VIEW',
-    SET_STATUS:         'SET_STATUS',
-    TOGGLE_SIDEBAR:     'TOGGLE_SIDEBAR',
-    SET_PREVIEW_URL:    'SET_PREVIEW_URL',
+    SET_ACTIVE_PROJECT:   'SET_ACTIVE_PROJECT',
+    SET_CONFIG_DIR:       'SET_CONFIG_DIR',
+    SET_POST:             'SET_POST',
+    SET_VIEW:             'SET_VIEW',
+    SET_STATUS:           'SET_STATUS',
+    TOGGLE_SIDEBAR:       'TOGGLE_SIDEBAR',
+    SET_PREVIEW_URL:      'SET_PREVIEW_URL',
+    SET_AUTO_SAVE_DELAY:  'SET_AUTO_SAVE_DELAY',
 };
 
 // ----------------------------------------------------------
@@ -65,6 +67,10 @@ function reducer(state, action) {
 
         case Actions.SET_PREVIEW_URL:
             next = { ...state, previewUrl: action.payload };
+            break;
+
+        case Actions.SET_AUTO_SAVE_DELAY:
+            next = { ...state, autoSaveDelay: action.payload };
             break;
 
         default:

@@ -6,7 +6,7 @@ import { loadInitialPreview }   from './hooks/usePreview.js';
 import Topbar          from './components/Topbar.jsx';
 import Sidebar         from './components/Sidebar.jsx';
 import AppConfig       from './components/views/AppConfig.jsx';
-import ConfigForm      from './components/views/ConfigForm.jsx';
+import SiteConfig      from './components/views/SiteConfig.jsx';
 import PostEditor      from './components/views/PostEditor.jsx';
 import SitePreview     from './components/views/SitePreview.jsx';
 
@@ -31,6 +31,31 @@ export default function App() {
         console.trace('[App:useEffect:loadInitialPreview] begins');
         loadInitialPreview(dispatch);
         console.trace('[App:useEffect:loadInitialPreview] ends');
+    }, []);
+
+    // ----------------------------------------------------------
+    // On mount — load autoSaveDelay from app config into store
+    // ----------------------------------------------------------
+    useEffect(function () {
+        console.trace('[App:useEffect:loadAutoSaveDelay] begins');
+
+        async function loadAutoSaveDelay() {
+            try {
+                const res = await window.api.getAppConfig();
+                console.debug('[App:useEffect:loadAutoSaveDelay] result =>', res);
+
+                if (res.ok && res.config.autoSaveDelay) {
+                    dispatch({ type: Actions.SET_AUTO_SAVE_DELAY, payload: res.config.autoSaveDelay });
+                    console.debug('[App:useEffect:loadAutoSaveDelay] autoSaveDelay =>', res.config.autoSaveDelay);
+                }
+            } catch (e) {
+                console.debug('[App:useEffect:loadAutoSaveDelay] exception =>', e.message);
+            }
+        }
+
+        loadAutoSaveDelay();
+
+        console.trace('[App:useEffect:loadAutoSaveDelay] ends');
     }, []);
 
     // ----------------------------------------------------------
@@ -103,7 +128,7 @@ export default function App() {
                     <SitePreview />
 
                     {state.currentView === 'app-config'   && <AppConfig />}
-                    {state.currentView === 'config-form'  && <ConfigForm onProjectNameChange={handleProjectNameChange} />}
+                    {state.currentView === 'config-form'  && <SiteConfig onProjectNameChange={handleProjectNameChange} />}
                     {state.currentView === 'post-editor'  && <PostEditor />}
 
                     {state.currentView !== 'app-config'  &&
