@@ -250,7 +250,11 @@ function createWindow() {
         }
     });
 
-    win.loadFile(path.join(__dirname, 'editor/index.html'));
+    if (process.env.NODE_ENV === 'development') {
+        win.loadURL('http://localhost:5173');
+    } else {
+        win.loadFile(path.join(__dirname, 'editor/dist-renderer/index.html'));
+    }
 
     // open devtools if enabled in app config
     if (cfg.devTools) win.webContents.openDevTools();

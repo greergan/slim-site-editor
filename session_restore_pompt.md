@@ -202,3 +202,214 @@ editor/
       editor.css
   vite.config.js
   
+  
+  # slim-site-editor — React Refactor Session Prompt
+
+## Purpose
+Copy-paste this at the start of each new session to restore context and pick up where we left off.
+
+---
+
+## Stack
+- Electron main process — unchanged (`main.js`, `preload.js`, `registry.js`, `app-config.js`)
+- Renderer — React + Vite (replacing vanilla JS ES modules)
+- Functional components and hooks only
+- All IPC via `window.api` (preload.js unchanged)
+- Quill for post body editor
+
+---
+
+## File Structure — Target
+
+```
+editor/
+  index.html               ← Vite entry point (DONE)
+  vite.config.js           ← Vite config (DONE)
+  src/
+    main.jsx               ← React root, mounts <App />
+    App.jsx                ← top level layout: topbar, sidebar, main
+    components/
+      Topbar.jsx
+      Sidebar.jsx
+      Main.jsx             ← view router, renders active view
+      views/
+        SitePreview.jsx    ← site preview iframe
+        PostEditor.jsx     ← Quill editor + save bar
+        ConfigForm.jsx     ← project config.json form
+        PostSettings.jsx   ← per-article settings form
+        AppConfig.jsx      ← app settings form
+        Welcome.jsx        ← empty state
+      sidebar/
+        ProjectList.jsx    ← project accordion
+        ProjectRow.jsx     ← single project row + context menu
+        ArticleList.jsx    ← articles under a project
+        AddProject.jsx     ← new/import/remote tabs
+    hooks/
+      useProjects.js
+      usePreview.js
+      usePosts.js
+      useAppConfig.js
+      useProjectConfig.js
+    store/
+      appState.js          ← shared state (activeProject, currentView, statusMsg)
+    css/
+      editor.css
+```
+
+---
+
+## Shared State (appState.js)
+- `activeProject` — currently active project dir path
+- `currentView` — one of: `welcome` | `site-preview` | `post-editor` | `config-form` | `post-settings` | `app-config`
+- `statusMsg` — `{ msg, state }` where state: `idle | info | success | error | warning`
+
+---
+
+## Status States
+| State | Use for |
+|---|---|
+| `idle` | Clear/blank |
+| `info` | Neutral in-progress |
+| `success` | Completed OK — auto-clears 3s |
+| `error` | Failure — stays until next action |
+| `warning` | Non-fatal alert — stays until next action |
+
+---
+
+## window.api (preload.js — do not change)
+`appName`, `pickDirectory`, `listProjects`, `newProject`, `importProject`,
+`removeProject`, `setActive`, `archiveProject`, `getAppConfig`, `saveAppConfig`,
+`listPosts`, `getPost`, `savePost`, `getConfig`, `saveConfig`, `triggerBuild`,
+`getPreviewUrl`
+
+---
+
+## Logging Pattern (all functions)
+
+```js
+// 1st line of functional code
+console.trace('[functionName] begins');
+
+// checkpoints
+console.debug('[functionName] thing =>', value);
+
+// last line before all returns
+console.trace('[functionName] ends');
+```
+
+---
+
+## Incremental Build Plan
+
+### Phase 1 — Foundation
+- [ ] `store/appState.js`
+- [ ] `src/main.jsx`
+- [ ] `src/App.jsx`
+- [ ] `src/css/editor.css` (copy existing)
+
+**Gate:** Vite dev server loads, shell renders, no errors.
+
+---
+
+### Phase 2 — Topbar
+- [ ] `components/Topbar.jsx`
+
+**Gate:** Status messages display correctly.
+
+---
+
+### Phase 3 — Sidebar
+- [ ] `hooks/useProjects.js`
+- [ ] `components/sidebar/ProjectList.jsx`
+- [ ] `components/sidebar/ProjectRow.jsx`
+- [ ] `components/sidebar/ArticleList.jsx`
+- [ ] `components/sidebar/AddProject.jsx`
+- [ ] `components/Sidebar.jsx`
+
+**Gate:** Projects load, accordion opens, context menu works, add project works.
+
+---
+
+### Phase 4 — Main view router
+- [ ] `components/Main.jsx`
+- [ ] `components/views/Welcome.jsx`
+
+**Gate:** Welcome shows on load, switching project shows correct view.
+
+---
+
+### Phase 5 — Site preview
+- [ ] `hooks/usePreview.js`
+- [ ] `components/views/SitePreview.jsx`
+
+**Gate:** Preview loads on project activate.
+
+---
+
+### Phase 6 — Project config form
+- [ ] `hooks/useProjectConfig.js`
+- [ ] `components/views/ConfigForm.jsx`
+
+**Gate:** Config form loads, saves, updates sidebar row name.
+
+---
+
+### Phase 7 — Post editor
+- [ ] `hooks/usePosts.js`
+- [ ] `components/views/PostEditor.jsx`
+
+**Gate:** Posts open, edit, save, preview updates.
+
+---
+
+### Phase 8 — Post settings
+- [ ] `components/views/PostSettings.jsx`
+
+**Gate:** Settings form loads and saves.
+
+---
+
+### Phase 9 — App config
+- [ ] `hooks/useAppConfig.js`
+- [ ] `components/views/AppConfig.jsx`
+
+**Gate:** App config loads, saves, dir picker works.
+
+---
+
+### Phase 10 — Cleanup
+- [ ] Delete `editor/js/` entirely
+- [ ] Delete `editor/partials/` entirely
+- [ ] Confirm `editor/index.html` is Vite entry only
+- [ ] Smoke test all views end to end
+
+---
+
+## Working Rules
+- Always ask to see relevant files before designing
+- Plan before any code — wait for go-ahead
+- One file at a time, full file reissued for download
+- No compiling or running tests — code given to developer to compile
+- No refactoring without permission
+- No removing anything without permission
+- Do not rewrite comments
+- All functions get trace logging at start/end and debug checkpoints
+- Mark completed steps with `[x]` when done
+
+---
+
+## Git Commit Message Rules
+- `feature:` — new functionality (minor bump)
+- `fix:` — bug fix (patch bump)
+- `config:` — configuration or build changes (patch bump)
+- `docs:` — documentation changes (patch bump)
+
+---
+
+## Session Handoff Instructions
+At the end of each session:
+1. Mark completed steps `[x]` in this document
+2. Note the next step to pick up
+3. Ask for a git commit block covering all session changes
+
+**Next step to pick up:** Phase 1 — `store/appState.js`

@@ -4,8 +4,8 @@
   "description": "Slim site editor",
   "main": "app/main.js",
   "scripts": {
-    "dev": "concurrently \"vite dev --config editor/vite.config.js\" \"NODE_ENV=development electron --no-sandbox app/main.js\"",
-    "build": "vite build --config editor/vite.config.js",
+    "dev": "concurrently \"vite --config vite.config.mjs\" \"sleep 5 && NODE_ENV=development electron --no-sandbox app/main.js\"",
+    "build": "vite build --config vite.config.mjs",
     "start": "NODE_ENV=development electron --no-sandbox app/main.js"
   },
   "devDependencies": {
