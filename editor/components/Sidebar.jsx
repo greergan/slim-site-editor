@@ -84,13 +84,11 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
 
         setStatus(dispatch, 'Project deleted', 'success');
 
-        // if the deleted project was active — reset to welcome
-        if (dir === state.activeProject) {
-            console.debug('[Sidebar:handleRemove] deleted project was active — resetting view');
-            dispatch({ type: Actions.SET_ACTIVE_PROJECT, payload: null });
-            dispatch({ type: Actions.SET_PREVIEW_URL,    payload: null });
-            dispatch({ type: Actions.SET_VIEW,           payload: 'welcome' });
-        }
+        // reset to welcome — deleted project may or may not have been active
+        console.debug('[Sidebar:handleRemove] resetting view to welcome');
+        dispatch({ type: Actions.SET_ACTIVE_PROJECT, payload: null });
+        dispatch({ type: Actions.SET_PREVIEW_URL,    payload: null });
+        dispatch({ type: Actions.SET_VIEW,           payload: 'welcome' });
 
         console.trace('[Sidebar:handleRemove] ends');
     }
