@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import ProjectRow            from './ProjectRow.jsx';
 import ArticleList           from './ArticleList.jsx';
 
@@ -8,11 +8,27 @@ import ArticleList           from './ArticleList.jsx';
 // ProjectList — collapsible accordion of all projects
 // Starts expanded
 // ----------------------------------------------------------
-export default function ProjectList({ projects, lastActive, onActivate, onRemove, onArchive, onOpenConfig, onOpenPost, onOpenPostConfig, activeSlug, activeConfigSlug }) {
+export default function ProjectList({ projects, lastActive, expandDir, onActivate, onRemove, onArchive, onOpenConfig, onOpenPost, onOpenPostConfig, activeSlug, activeConfigSlug }) {
     console.trace('[ProjectList] begins');
 
     const [sectionOpen, setSectionOpen] = useState(true);
     const [openDirs,    setOpenDirs]    = useState({});
+
+    // ----------------------------------------------------------
+    // Expand a specific row when expandDir changes
+    // ----------------------------------------------------------
+    useEffect(function () {
+        console.trace('[ProjectList:useEffect:expandDir] begins');
+        console.debug('[ProjectList:useEffect:expandDir] expandDir =>', expandDir);
+
+        if (expandDir) {
+            setOpenDirs(function (prev) {
+                return { ...prev, [expandDir]: true };
+            });
+        }
+
+        console.trace('[ProjectList:useEffect:expandDir] ends');
+    }, [expandDir]);
 
     function handleSectionToggle() {
         console.trace('[ProjectList:handleSectionToggle] begins');

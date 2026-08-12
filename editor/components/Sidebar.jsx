@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { useEffect }         from 'react';
+import React, { useEffect, useState }    from 'react';
 import { useAppState, Actions }      from '../store/appState.jsx';
 import { useProjects }               from '../hooks/useProjects.js';
 import ProjectList                   from './sidebar/ProjectList.jsx';
@@ -23,6 +23,8 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
         removeProject,
         archiveProject,
     } = useProjects();
+
+    const [expandDir, setExpandDir] = useState(null);
 
     // ----------------------------------------------------------
     // Load projects on mount
@@ -89,6 +91,7 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
         console.debug('[Sidebar:handleProjectAdded] dir =>', dir);
         await loadProjects();
         await handleActivate(dir);
+        setExpandDir(dir);
         console.trace('[Sidebar:handleProjectAdded] ends');
     }
 
@@ -113,6 +116,7 @@ export default function Sidebar({ onOpenConfig, onOpenPost, onOpenPostConfig, on
             <ProjectList
                 projects={projects}
                 lastActive={lastActive}
+                expandDir={expandDir}
                 onActivate={handleActivate}
                 onRemove={handleRemove}
                 onArchive={handleArchive}
