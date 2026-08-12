@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { useState, useEffect }  from 'react';
+import { useAppState, Actions }        from '../../store/appState.jsx';
 import ProjectRow            from './ProjectRow.jsx';
 import ArticleList           from './ArticleList.jsx';
 
@@ -10,6 +11,8 @@ import ArticleList           from './ArticleList.jsx';
 // ----------------------------------------------------------
 export default function ProjectList({ projects, lastActive, expandDir, onActivate, onRemove, onArchive, onOpenConfig, onOpenPost, onOpenPostConfig, activeSlug, activeConfigSlug }) {
     console.trace('[ProjectList] begins');
+
+    const { dispatch } = useAppState();
 
     const [sectionOpen, setSectionOpen] = useState(true);
     const [openDirs,    setOpenDirs]    = useState({});
@@ -33,6 +36,8 @@ export default function ProjectList({ projects, lastActive, expandDir, onActivat
     function handleSectionToggle() {
         console.trace('[ProjectList:handleSectionToggle] begins');
         setSectionOpen(function (v) { return !v; });
+        dispatch({ type: Actions.SET_VIEW, payload: 'welcome' });
+        console.debug('[ProjectList:handleSectionToggle] view reset to welcome');
         console.trace('[ProjectList:handleSectionToggle] ends');
     }
 
