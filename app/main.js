@@ -297,11 +297,18 @@ ipcMain.handle('app-name', async function (event) {
 // Opens native OS directory picker
 // Returns selected path string or null if cancelled
 // -------------------------------------------------------------
-ipcMain.handle('pick-directory', async function (event) {
+ipcMain.handle('pick-directory', async function (event, args) {
     try {
-        const result = await dialog.showOpenDialog({
+        const opts = {
             properties: ['openDirectory', 'createDirectory']
-        });
+        };
+
+        if (args && args.defaultPath) {
+            opts.defaultPath = args.defaultPath;
+            log.debug({func: 'pick-directory', msg: `defaultPath => ${args.defaultPath}`, file: __filename, line: 0});
+        }
+
+        const result = await dialog.showOpenDialog(opts);
 
         if (result.canceled || result.filePaths.length === 0) {
             return null;

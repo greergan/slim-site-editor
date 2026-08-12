@@ -8,8 +8,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
     // app info — ipcRenderer.invoke so main process reads package.json
     appName:        () => ipcRenderer.invoke('app-name'),
-    // native OS directory picker
-    pickDirectory:  () => ipcRenderer.invoke('pick-directory'),
+    // native OS directory picker — accepts optional { defaultPath }
+    pickDirectory:  (args) => ipcRenderer.invoke('pick-directory', args),
     // project registry
     listProjects:   () => ipcRenderer.invoke('list-projects'),
     newProject:     (args) => ipcRenderer.invoke('new-project', args),

@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAppState, setStatus }     from '../../store/appState.jsx';
 
 // ----------------------------------------------------------
 // AddProject — collapsible tabbed form for adding projects
@@ -10,12 +11,14 @@ import React, { useState } from 'react';
 export default function AddProject({ onProjectAdded }) {
     console.trace('[AddProject] begins');
 
+    const { dispatch } = useAppState();
+
     const [sectionOpen, setSectionOpen] = useState(false);
     const [activeTab,   setActiveTab]   = useState('new');
 
     // New tab state
     const [newParentDir, setNewParentDir] = useState('');
-    const [newName,      setNewName]      = useState('');
+    const [newName,      setNewName]      = useState('new-site');
 
     // Import tab state
     const [importDir, setImportDir] = useState('');
@@ -23,6 +26,33 @@ export default function AddProject({ onProjectAdded }) {
     // Remote tab state — stub
     const [remoteUrl,  setRemoteUrl]  = useState('');
     const [remoteDest, setRemoteDest] = useState('');
+
+    // ----------------------------------------------------------
+    // Load defaultProjectDir from app config on mount
+    // ----------------------------------------------------------
+    useEffect(function () {
+        console.trace('[AddProject:useEffect:loadDefaults] begins');
+
+        async function loadDefaults() {
+            try {
+                const res = await window.api.getAppConfig();
+                console.debug('[AddProject:useEffect:loadDefaults] result =>', res);
+
+                if (res.ok && res.config.defaultProjectDir) {
+                    setNewParentDir(function (prev) {
+                        return prev === '' ? res.config.defaultProjectDir : prev;
+                    });
+                    console.debug('[AddProject:useEffect:loadDefaults] defaultProjectDir =>', res.config.defaultProjectDir);
+                }
+            } catch (e) {
+                console.debug('[AddProject:useEffect:loadDefaults] exception =>', e.message);
+            }
+        }
+
+        loadDefaults();
+
+        console.trace('[AddProject:useEffect:loadDefaults] ends');
+    }, []);
 
     function handleSectionToggle() {
         console.trace('[AddProject:handleSectionToggle] begins');
@@ -44,7 +74,7 @@ export default function AddProject({ onProjectAdded }) {
         console.trace('[AddProject:pickDir] begins');
 
         try {
-            const dir = await window.api.pickDirectory();
+            const dir = await window.api.pickDirectory({ defaultPath: newParentDir || undefined });
             console.debug('[AddProject:pickDir] picked =>', dir);
 
             if (!dir) {
@@ -57,7 +87,7 @@ export default function AddProject({ onProjectAdded }) {
             if (nameAutoFill) {
                 const basename = dir.split('/').filter(Boolean).pop();
                 console.debug('[AddProject:pickDir] auto-fill name =>', basename);
-                setNewName(function (prev) { return prev || basename; });
+                setNewName(function (prev) { return prev === 'new-site' ? basename : prev; });
             }
         } catch (e) {
             console.debug('[AddProject:pickDir] exception =>', e.message);
@@ -73,6 +103,12 @@ export default function AddProject({ onProjectAdded }) {
         console.trace('[AddProject:doNewProject] begins');
         console.debug('[AddProject:doNewProject] parentDir =>', newParentDir, 'name =>', newName);
 
+        if (newName === 'new-site') {
+            setStatus(dispatch, 'Rename your project before creating', 'warning');
+            console.trace('[AddProject:doNewProject] ends — default name');
+            return;
+        }
+
         try {
             const result = await window.api.newProject({ parentDir: newParentDir, name: newName });
             console.debug('[AddProject:doNewProject] result =>', result);
@@ -84,7 +120,7 @@ export default function AddProject({ onProjectAdded }) {
             }
 
             setNewParentDir('');
-            setNewName('');
+            setNewName('new-site');
             setSectionOpen(false);
             onProjectAdded(result.dir);
 
