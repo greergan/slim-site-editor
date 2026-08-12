@@ -212,15 +212,15 @@ Three sections in this order:
 - [x] Active project row is highlighted in blue
 - [x] Clicking a project row expands it and sets it as active
 - [ ] Site preview loads in main area when project is activated
-- [ ] First child under expanded project is "Site Settings"
+- [x] First child under expanded project is "Site Settings"
 - [ ] Clicking "Site Settings" opens project config form
-- [ ] Articles list under each project loads from IPC
-- [ ] Each article renders as an indented row
+- [x] Articles list under each project loads from IPC
+- [x] Each article renders as an indented row
 - [ ] Clicking an article opens the post editor
-- [ ] Each article has a "Settings" child link
+- [x] Each article has a "Settings" child link
 - [ ] Clicking "Settings" opens post settings form for that article
-- [ ] `⋯` button opens context menu with Delete and Archive
-- [ ] Delete shows confirmation dialog before deleting
+- [x] `⋯` button opens context menu with Delete and Archive
+- [x] Delete shows confirmation dialog before deleting
 - [ ] Archive is a stub
 
 ---
@@ -361,6 +361,26 @@ Before any component design, provide a plain-English user workflow plan that des
 - `docs:` — documentation changes (patch bump)
 
 ---
+
+# Share these files at session start:
+- editor/App.jsx
+- editor/store/appState.jsx
+- editor/components/Topbar.jsx
+- editor/components/Sidebar.jsx
+- editor/components/sidebar/ProjectList.jsx
+- editor/components/sidebar/ProjectRow.jsx
+- editor/components/sidebar/ArticleList.jsx
+- editor/components/sidebar/AddProject.jsx
+- editor/components/views/AppConfig.jsx
+- app/main.js
+- app/preload.js
+
+
+## Where we left off:
+
+Phase 3 complete except: Clicking "Site Settings" (Phase 6), article click (Phase 7), article Settings click (Phase 8)
+Phase 5 (site preview) is next — plan approved, ready for code design
+Start with usePreview.js then SitePreview.jsx
 
 ### Phase 3 — Testable Steps prompt me for each one before it is checked off
 - start here
