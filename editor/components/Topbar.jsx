@@ -68,19 +68,19 @@ function buildBreadcrumb(currentView, activeProject, currentPost) {
 // ----------------------------------------------------------
 // Topbar component
 // ----------------------------------------------------------
-export default function Topbar({ currentPost }) {
+export default function Topbar() {
     console.trace('[Topbar] begins');
 
     const { state, dispatch } = useAppState();
 
-    const { statusMsg, currentView, activeProject, sidebarCollapsed } = state;
+    const { statusMsg, currentView, activeProject, activePostSlug, sidebarCollapsed } = state;
 
     // center shows status message when state is not idle
     // otherwise shows breadcrumb
     const showStatus  = statusMsg.state !== 'idle' && statusMsg.msg !== '';
     const centerText  = showStatus
         ? statusMsg.msg
-        : buildBreadcrumb(currentView, activeProject, currentPost);
+        : buildBreadcrumb(currentView, activeProject, activePostSlug);
 
     const centerClass = showStatus ? `status ${statusMsg.state}` : 'breadcrumb';
 
