@@ -7,6 +7,7 @@ import { createContext, useContext, useReducer } from 'react';
 // ----------------------------------------------------------
 const initialState = {
     activeProject:    null,
+    activeConfigDir:  null,
     currentView:      'welcome',
     statusMsg:        { msg: '', state: 'idle' },
     sidebarCollapsed: false,
@@ -18,6 +19,7 @@ const initialState = {
 // ----------------------------------------------------------
 export const Actions = {
     SET_ACTIVE_PROJECT: 'SET_ACTIVE_PROJECT',
+    SET_CONFIG_DIR:     'SET_CONFIG_DIR',
     SET_VIEW:           'SET_VIEW',
     SET_STATUS:         'SET_STATUS',
     TOGGLE_SIDEBAR:     'TOGGLE_SIDEBAR',
@@ -36,6 +38,10 @@ function reducer(state, action) {
     switch (action.type) {
         case Actions.SET_ACTIVE_PROJECT:
             next = { ...state, activeProject: action.payload };
+            break;
+
+        case Actions.SET_CONFIG_DIR:
+            next = { ...state, activeConfigDir: action.payload };
             break;
 
         case Actions.SET_VIEW:

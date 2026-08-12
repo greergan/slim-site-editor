@@ -6,6 +6,7 @@ import { loadInitialPreview }   from './hooks/usePreview.js';
 import Topbar          from './components/Topbar.jsx';
 import Sidebar         from './components/Sidebar.jsx';
 import AppConfig       from './components/views/AppConfig.jsx';
+import ConfigForm      from './components/views/ConfigForm.jsx';
 import SitePreview     from './components/views/SitePreview.jsx';
 
 // ----------------------------------------------------------
@@ -38,8 +39,19 @@ export default function App() {
     function handleOpenConfig(dir) {
         console.trace('[App:handleOpenConfig] begins');
         console.debug('[App:handleOpenConfig] dir =>', dir);
-        // Phase 6
+        dispatch({ type: Actions.SET_CONFIG_DIR, payload: dir });
+        dispatch({ type: Actions.SET_VIEW,       payload: 'config-form' });
         console.trace('[App:handleOpenConfig] ends');
+    }
+
+    function handleProjectNameChange(dir, name) {
+        console.trace('[App:handleProjectNameChange] begins');
+        console.debug('[App:handleProjectNameChange] dir =>', dir, 'name =>', name);
+        // ProjectList manages its own project name display via the projects array
+        // The sidebar re-renders when projects reload; name update is reflected on next load
+        // For immediate sidebar label update this would require a projects refresh or
+        // a dedicated callback into ProjectList — deferred to Phase 6 gate review
+        console.trace('[App:handleProjectNameChange] ends');
     }
 
     function handleOpenPost(dir, slug) {
@@ -88,9 +100,12 @@ export default function App() {
                     {/* SitePreview stays mounted — hidden/shown via CSS */}
                     <SitePreview />
 
-                    {state.currentView === 'app-config' && <AppConfig />}
+                    {state.currentView === 'app-config'  && <AppConfig />}
+                    {state.currentView === 'config-form' && <ConfigForm onProjectNameChange={handleProjectNameChange} />}
 
-                    {state.currentView !== 'app-config' && state.currentView !== 'site-preview' && (
+                    {state.currentView !== 'app-config'  &&
+                     state.currentView !== 'config-form' &&
+                     state.currentView !== 'site-preview' && (
                         <div id="empty-state" className="visible">
                             open or create a project to get started
                         </div>
