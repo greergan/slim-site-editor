@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { useState, useEffect } from 'react';
-import { useAppState, setStatus }     from '../../store/appState.jsx';
+import { useAppState, setStatus, Actions } from '../../store/appState.jsx';
 
 // ----------------------------------------------------------
 // AddProject — collapsible tabbed form for adding projects
@@ -11,7 +11,7 @@ import { useAppState, setStatus }     from '../../store/appState.jsx';
 export default function AddProject({ onProjectAdded }) {
     console.trace('[AddProject] begins');
 
-    const { dispatch } = useAppState();
+    const { state, dispatch } = useAppState();
 
     const [sectionOpen, setSectionOpen] = useState(false);
     const [activeTab,   setActiveTab]   = useState('new');
@@ -56,7 +56,17 @@ export default function AddProject({ onProjectAdded }) {
 
     function handleSectionToggle() {
         console.trace('[AddProject:handleSectionToggle] begins');
-        setSectionOpen(function (v) { return !v; });
+        setSectionOpen(function (v) {
+            const next = !v;
+            if (next) {
+                dispatch({ type: Actions.SET_VIEW, payload: 'add-project' });
+            } else {
+                // restore: if active project exists keep site-preview, otherwise welcome
+                const restore = state.activeProject ? 'site-preview' : 'welcome';
+                dispatch({ type: Actions.SET_VIEW, payload: restore });
+            }
+            return next;
+        });
         console.trace('[AddProject:handleSectionToggle] ends');
     }
 
@@ -122,6 +132,7 @@ export default function AddProject({ onProjectAdded }) {
             setNewParentDir('');
             setNewName('new-site');
             setSectionOpen(false);
+            dispatch({ type: Actions.SET_VIEW, payload: 'site-preview' });
             onProjectAdded(result.dir);
 
             console.trace('[AddProject:doNewProject] ends');
@@ -150,6 +161,7 @@ export default function AddProject({ onProjectAdded }) {
 
             setImportDir('');
             setSectionOpen(false);
+            dispatch({ type: Actions.SET_VIEW, payload: 'site-preview' });
             onProjectAdded(result.dir);
 
             console.trace('[AddProject:doImport] ends');

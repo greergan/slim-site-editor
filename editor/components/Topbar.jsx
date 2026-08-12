@@ -25,7 +25,11 @@ function buildBreadcrumb(currentView, activeProject, currentPost) {
 
     switch (currentView) {
         case 'welcome':
-            crumb = '';
+            crumb = 'Select or create a project';
+            break;
+
+        case 'add-project':
+            crumb = 'Add Project';
             break;
 
         case 'site-preview':
